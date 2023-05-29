@@ -1,3 +1,57 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true,
+    "node": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "overrides": [],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "react-hooks",
+    "eslint-plugin-import-helpers"
+  ],
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/react-in-jsx-scope": "off",
+
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always", // new line between groups
+        "groups": [
+          ["/^react/", "/next/", "/@next/"], // tudo que inicia com "react", "redux e "@next"
+          "/styled-components/", // tudo o que for importado diretamente da biblioteca styled-components. Isso é para garantir que a primeira importação nos arquivos styles.js seja sempre a do styled-components.
+          "module", // tudo que é um módulo (qualquer biblioteca listada no arquivo package.json)
+          "absolute",
+          "/prop-types/", // a importação do prop-types
+          "/styles/", // os meus estilos
+          "/pages/", // todas as minhas páginas
+          "/components/", // todas os meus componentes
+          ["parent", "sibling", "index"], // qualquer arquivo pai, irmão ou filho do arquivo atual
+          "/routes/", // as minhas rotas
+          "/^~/" // todos os outros arquivos importados pelo alias configurado
+        ],
+        "alphabetize": { "order": "asc", "ignoreCase": true }
+      }
+    ]
+  }
 }
