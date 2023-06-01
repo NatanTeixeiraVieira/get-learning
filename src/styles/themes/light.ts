@@ -2,7 +2,15 @@ export default {
   border: {
     radius: '0.3125rem', // 5px
   },
-  colors: {},
+  colors: {
+    primary: '#222222',
+    secondary: '#dc143c',
+    white: '#EFEFEF',
+    mediumGray: '#DDDDDD',
+    text: {
+      primary: '#333333',
+    },
+  },
   font: {
     sizes: {
       xxxxsmall: '0.5rem', // 8px
@@ -16,6 +24,11 @@ export default {
       xxlarge: '3rem', // 48px
       xxxlarge: '3.5rem', // 56px
       huge: '4rem', // 64px
+    },
+    weights: {
+      regular: 400,
+      bold: 700,
+      xbold: 800,
     },
   },
   spacings: {
