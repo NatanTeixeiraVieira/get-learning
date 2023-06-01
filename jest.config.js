@@ -15,6 +15,7 @@ const customJestConfig = {
     '!src/constants/**/*',
     '!src/styles/**/*',
     '!src/**/*.stories.tsx',
+    '!src/**/stories.tsx',
     '!src/**/styles.ts',
     '!src/**/types.ts',
   ],
