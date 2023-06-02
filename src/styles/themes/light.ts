@@ -40,6 +40,7 @@ export default {
     large: '2.5rem', // 40px
     xlarge: '3rem', // 48px
     xxlarge: '3.5rem', // 56px
+    huge: '4rem', // 64px
   },
   transition: {
     default: '0.3s ease-in-out',
