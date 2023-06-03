@@ -8,6 +8,9 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     box-sizing: border-box;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   ${({ theme }) => css`
     body {
       font-size: ${theme.font.sizes.xsmall};
@@ -32,10 +35,6 @@ const GlobalStyles = createGlobalStyle`
     ol {
       margin: ${theme.spacings.medium};
       padding: ${theme.spacings.medium};
-    }
-
-    a {
-      color: ${theme.colors.secondary};
     }
   `}
   `;
