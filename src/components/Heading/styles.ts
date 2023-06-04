@@ -13,7 +13,7 @@ const HeadingSizes = {
 
 export const HeadingContainer = styled.h1<HeadingProps>`
   ${({ theme, white, size = 'large', uppercase }) => css`
-    color: ${white ? theme.colors.white : theme.colors.text.primary};
+    color: ${white ? theme.colors.text.secondary : theme.colors.text.primary};
     font-size: ${HeadingSizes[size](theme)};
     text-transform: ${uppercase ? 'uppercase' : 'none'};
   `}

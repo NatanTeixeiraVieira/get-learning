@@ -10,7 +10,7 @@ export const ContainerLink = styled.a`
     position: fixed;
     right: ${theme.spacings.medium};
     bottom: ${theme.spacings.medium};
-    color: ${theme.colors.white};
+    color: ${theme.colors.text.secondary};
     width: 3rem;
     height: 3rem;
     border-radius: 100px;

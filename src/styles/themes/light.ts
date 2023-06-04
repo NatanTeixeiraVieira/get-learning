@@ -1,14 +1,16 @@
 export default {
   border: {
+    default: '1px solid #aaaaaa',
     radius: '0.3125rem', // 5px
   },
   colors: {
-    primary: '#222222',
-    secondary: '#dc143c',
-    white: '#EFEFEF',
+    background: '#F6F6F6',
+    primary: '#323232',
+    links: '#0969da',
     mediumGray: '#DDDDDD',
     text: {
       primary: '#333333',
+      secondary: '#EFEFEF',
     },
   },
   font: {

@@ -3,15 +3,18 @@
 import { createGlobalStyle, css } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
-  * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
-  html {
-    scroll-behavior: smooth;
-  }
   ${({ theme }) => css`
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      line-height: ${theme.spacings.small};
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-size: ${theme.font.sizes.xsmall};
     }
@@ -28,14 +31,18 @@ const GlobalStyles = createGlobalStyle`
     }
 
     p {
-      margin: ${theme.spacings.medium} 0;
+      margin: ${theme.spacings.xsmall} 0;
     }
 
-    ul,
-    ol {
-      margin: ${theme.spacings.medium};
-      padding: ${theme.spacings.medium};
+    a {
+      color: ${theme.colors.links};
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   `}
   `;
+
 export default GlobalStyles;
