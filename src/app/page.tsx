@@ -1,8 +1,9 @@
 import Footer from 'components/Footer';
 import GoToTop from 'components/GoToTop';
-import Heading from 'components/Heading';
 import PostContent from 'components/PostContent';
-import mock from 'components/PostContent/mock';
+import mockPostContent from 'components/PostContent/mock';
+import PostInfo from 'components/PostInfo';
+import mockPostInfo from 'components/PostInfo/mock';
 import PostOwner from 'components/PostOwner';
 
 export default function Home() {
@@ -13,9 +14,9 @@ export default function Home() {
         avatarSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
         description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit maxime, facere molestiae fugit reprehenderit exercitationem maiores expedita dolor, sint accusamus aliquam esse suscipit temporibus corporis, molestias dolore quibusdam excepturi accusantium?"
       />
-      <Heading>Hello, world</Heading>
+      <PostInfo {...mockPostInfo} />
       <GoToTop />
-      <PostContent content={mock} />
+      <PostContent content={mockPostContent} />
       <Footer />
     </>
   );

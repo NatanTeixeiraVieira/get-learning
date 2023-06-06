@@ -8,6 +8,7 @@ export default {
     primary: '#323232',
     links: '#0969da',
     mediumGray: '#DDDDDD',
+    darkGray: '#777777',
     text: {
       primary: '#333333',
       secondary: '#EFEFEF',
@@ -45,7 +46,7 @@ export default {
     huge: '4rem', // 64px
   },
   transition: {
-    default: '0.3s ease-in-out',
-    fast: '0.1s ease-in-out',
+    default: 'all 0.3s ease-in-out',
+    fast: 'all 0.1s ease-in-out',
   },
 } as const;
