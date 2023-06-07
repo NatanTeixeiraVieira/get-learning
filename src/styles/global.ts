@@ -8,7 +8,6 @@ const GlobalStyles = createGlobalStyle`
       padding: 0;
       margin: 0;
       box-sizing: border-box;
-      line-height: ${theme.spacings.small};
     }
 
     html {
@@ -27,11 +26,11 @@ const GlobalStyles = createGlobalStyle`
     h6 {
       font-weight: ${theme.font.weights.xbold};
       color: ${theme.colors.text.primary};
-      margin: ${theme.spacings.large} 0;
     }
 
     p {
       margin: ${theme.spacings.xsmall} 0;
+      line-height: ${theme.spacings.small};
     }
 
     a {
