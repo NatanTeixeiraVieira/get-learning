@@ -1,6 +1,7 @@
 export default {
   border: {
     default: '1px solid #aaaaaa',
+    large: '5px solid #323232',
     radius: '0.3125rem', // 5px
   },
   colors: {
@@ -48,5 +49,10 @@ export default {
   transition: {
     default: 'all 0.3s ease-in-out',
     fast: 'all 0.1s ease-in-out',
+  },
+  media: {
+    tablet: '@media (max-width: 1020px)',
+    mobile: '@media (max-width: 760px)',
+    mobilexsmall: '@media (max-width: 290px)',
   },
 } as const;

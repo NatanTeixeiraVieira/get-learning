@@ -12,6 +12,14 @@ const GlobalStyles = createGlobalStyle`
 
     html {
       scroll-behavior: smooth;
+
+      ${theme.media.mobile} {
+        font-size: 14px;
+      }
+
+      ${theme.media.mobilexsmall} {
+        font-size: 12px;
+      }
     }
 
     body {

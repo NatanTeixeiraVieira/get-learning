@@ -7,12 +7,22 @@ export const Wrapper = styled.section`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: ${theme.spacings.medium};
+    width: 80%;
     margin: 0 auto ${theme.spacings.huge};
-    width: 50vw;
+    gap: ${theme.spacings.small};
+
+    ${theme.media.mobile} {
+      flex-direction: column;
+      gap: ${theme.spacings.xsmall};
+    }
 
     img {
       border-radius: 100%;
+
+      ${theme.media.mobile} {
+        width: 90px;
+        height: 90px;
+      }
     }
   `}
 `;
@@ -20,8 +30,12 @@ export const Wrapper = styled.section`
 export const OwnerInfo = styled.div`
   ${({ theme }) => css`
     display: flex;
-    flex-flow: column wrap;
-    gap: ${theme.spacings.xsmall};
+    flex-direction: column;
+    gap: ${theme.spacings.xxsmall};
+
+    ${theme.media.mobile} {
+      text-align: center;
+    }
   `}
 `;
 
