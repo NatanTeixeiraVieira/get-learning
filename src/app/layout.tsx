@@ -1,5 +1,8 @@
 import { Open_Sans } from 'next/font/google';
 
+import Footer from 'components/Footer';
+import Header from 'components/Header';
+
 import { Providers } from './providers';
 
 const openSans = Open_Sans({
@@ -20,7 +23,11 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={openSans.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
