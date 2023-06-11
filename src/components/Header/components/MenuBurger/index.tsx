@@ -9,7 +9,7 @@ export type MenuBurgerProps = {
 
 export default function MenuBurger({ onClick, showMenu }: MenuBurgerProps) {
   return (
-    <Container onClick={onClick} showMenu={showMenu}>
+    <Container onClick={onClick} showMenu={showMenu} data-testid="menuBurger">
       <span></span>
       <span></span>
       <span></span>
