@@ -19,10 +19,11 @@ export default function Header() {
   const handleShowMenu = () => {
     setShowMenu((prev) => !prev);
   };
+
   return (
     <HeaderContainer>
       <MenuBurger onClick={handleShowMenu} showMenu={showMenu} />
-      <HeaderContent showMenu={showMenu}>
+      <HeaderContent showMenu={showMenu} role="menubar">
         <nav>
           <ul>
             <HeaderLink href="/" name="GetLearning" />
@@ -37,7 +38,11 @@ export default function Header() {
           <HeaderLink href="/" name="Cadastrar" />
         </ul>
       </HeaderContent>
-      <OutOfMenu showMenu={showMenu} onClick={closeMenu}></OutOfMenu>
+      <OutOfMenu
+        showMenu={showMenu}
+        onClick={closeMenu}
+        data-testid="outOfMenu"
+      />
     </HeaderContainer>
   );
 }
