@@ -37,7 +37,6 @@ const GlobalStyles = createGlobalStyle`
     }
 
     p {
-      margin: ${theme.spacings.xsmall} 0;
       line-height: ${theme.spacings.small};
     }
 

@@ -47,8 +47,8 @@ export default {
     huge: '4rem', // 64px
   },
   transition: {
-    default: 'all 0.3s ease-in-out',
-    fast: 'all 0.1s ease-in-out',
+    default: 'all 0.3s ease',
+    fast: 'all 0.1s ease',
   },
   media: {
     tablet: '@media (max-width: 1020px)',

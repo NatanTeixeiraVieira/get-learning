@@ -10,7 +10,8 @@ export const Wrapper = styled.section`
 
   ${({ theme }) => css`
     hr {
-      margin-top: ${theme.spacings.xlarge};
+      color: ${theme.colors.mediumGray};
+      margin-top: ${theme.spacings.large};
     }
   `}
 `;

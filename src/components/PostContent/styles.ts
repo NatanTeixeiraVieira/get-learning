@@ -4,8 +4,8 @@ import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.section`
   ${({ theme }) => css`
-    max-width: 60vw;
-    margin: 0 auto;
+    margin-top: ${theme.spacings.huge};
+    overflow-x: auto;
 
     pre {
       background-color: ${theme.colors.primary};
@@ -13,6 +13,14 @@ export const Wrapper = styled.section`
       padding: ${theme.spacings.xsmall};
       margin: ${theme.spacings.medium} 0;
       overflow-x: auto;
+    }
+
+    blockquote {
+      margin-left: ${theme.spacings.medium};
+      padding-left: ${theme.spacings.xsmall};
+      border-left: ${theme.border.large};
+      font-style: italic;
+      opacity: 0.8;
     }
 
     img {
@@ -31,8 +39,6 @@ export const Wrapper = styled.section`
 
     table {
       width: 100%;
-      overflow-x: hidden;
-      overflow-x: auto;
       border-collapse: collapse;
     }
 
@@ -40,6 +46,7 @@ export const Wrapper = styled.section`
     table th {
       padding: ${theme.spacings.small};
       border: ${theme.border.default};
+      overflow-x: auto;
     }
   `}
 `;
