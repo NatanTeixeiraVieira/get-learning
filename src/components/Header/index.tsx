@@ -6,8 +6,8 @@ import { Sun } from 'lucide-react';
 
 import { HeaderContainer, HeaderContent, OutOfMenu, ThemeIcon } from './styles';
 
-import HeaderLink from './components/HeaderLink';
-import MenuBurger from './components/MenuBurger';
+import HeaderLink from 'components/HeaderLink';
+import MenuBurger from 'components/MenuBurger';
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
