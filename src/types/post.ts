@@ -33,4 +33,8 @@ export type Post = {
   content: string;
   tags: Tag[];
   id: string;
+  createdAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
 };

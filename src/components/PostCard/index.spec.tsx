@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { Providers } from 'app/providers';
-import { subtitleFormatter } from 'utils/subtitleFormatter';
+import { textFormatter } from 'utils/textFormatter';
 
 import PostCard from '.';
 
@@ -29,6 +29,6 @@ describe('<PostCard>', () => {
 
     expect(screen.getByText('Title')).toBeInTheDocument();
 
-    expect(screen.getByText(subtitleFormatter('Subtitle'))).toBeInTheDocument();
+    expect(screen.getByText(textFormatter('Subtitle'))).toBeInTheDocument();
   });
 });

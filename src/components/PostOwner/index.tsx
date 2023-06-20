@@ -20,8 +20,8 @@ export default function PostOwner({
       <Image
         src={avatarSrc}
         alt="Avatar do proprietário do blog"
-        width={150}
-        height={150}
+        width={130}
+        height={130}
       />
       <OwnerInfo>
         <Name>{name}</Name>

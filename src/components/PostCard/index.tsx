@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { HTMLAttributes } from 'react';
 
-import { subtitleFormatter } from 'utils/subtitleFormatter';
+import { textFormatter } from 'utils/textFormatter';
 
 import { Container, Subtitle } from './styles';
 
@@ -12,25 +11,26 @@ export type PostCardProps = {
   title: string;
   subtitle: string;
   imageSrc: string;
-  slug: string;
-} & HTMLAttributes<HTMLDivElement>;
+  id: string;
+  key: string;
+};
 
 export default function PostCard({
   title,
   subtitle,
   imageSrc,
-  slug,
-  ...rest
+  id,
+  key,
 }: PostCardProps) {
   return (
-    <Container {...rest}>
-      <Link href={`/post/${slug}`}>
+    <Container key={key}>
+      <Link href={`/post/${id}`}>
         <Image src={imageSrc} alt={title} width={320} height={180} />
       </Link>
       <Heading as="h2" size="small">
-        <Link href={`/post/${slug}`}>{title}</Link>
+        <Link href={`/post/${id}`}>{title}</Link>
       </Heading>
-      <Subtitle>{subtitleFormatter(subtitle)}</Subtitle>
+      <Subtitle>{textFormatter(subtitle)}</Subtitle>
     </Container>
   );
 }
