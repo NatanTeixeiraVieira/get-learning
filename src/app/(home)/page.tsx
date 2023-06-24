@@ -1,18 +1,17 @@
+import usePostsStore from 'store/posts';
+import InitializerPostsStore from 'store/posts/initializerStore';
 import { Post } from 'types/post';
 import getDatas from 'utils/getDatas';
 
-import { PostGrid } from './styles';
-
-import PostCard from 'components/PostCard';
+import PostGrid from 'components/PostGrid';
 
 export default async function Home() {
-  let posts: Post[] | null = null;
+  let posts: Post[] = [];
   try {
     posts = await getDatas<Post[]>('/posts', {
-      next: {
-        revalidate: 5,
-      },
+      next: { revalidate: 10 },
     });
+    usePostsStore.setState({ state: { posts: posts } });
   } catch (err) {
     return (
       <div>
@@ -24,17 +23,8 @@ export default async function Home() {
 
   return (
     <>
-      <PostGrid>
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            slug={post.slug}
-            title={post.title}
-            subtitle={post.subtitle}
-            imageSrc={post.coverImage.url}
-          />
-        ))}
-      </PostGrid>
+      <InitializerPostsStore posts={posts} />
+      <PostGrid />
     </>
   );
 }

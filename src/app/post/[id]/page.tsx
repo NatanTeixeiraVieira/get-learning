@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import usePostsStore from 'store/posts';
 import { Post } from 'types/post';
 import getDatas from 'utils/getDatas';
 import { textFormatter } from 'utils/textFormatter';
@@ -30,18 +31,12 @@ export const generateMetadata = async ({
 };
 
 export const generateStaticParams = async () => {
-  try {
-    const posts = await getDatas<Post[]>('/posts', {
-      next: { revalidate: 10 },
-    });
-    const ids = posts.map((post) => ({
-      id: `${post.id}`,
-    }));
+  const { posts } = usePostsStore.getState().state;
+  const ids = posts.map((post) => ({
+    id: `${post.id}`,
+  }));
 
-    return ids;
-  } catch (err) {
-    return [];
-  }
+  return ids;
 };
 
 type PostProps = {
@@ -78,7 +73,7 @@ export default async function Post({ params }: PostProps) {
           title={post.title}
           subtitle={textFormatter(post.subtitle)}
           imageSrc={post.coverImage.url}
-          createdAt={post.createdAt._seconds * 1000}
+          createdAt={post.createdAt}
           author={post.author}
           categories={post.categories}
         />
