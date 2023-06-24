@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Providers } from 'app/providers';
+import postMock from 'mock/postMock';
 
 import PostInfo, { PostInfoProps } from '.';
-import mock from './mock';
 
 export default {
   title: 'PostInfo',
@@ -20,7 +20,11 @@ export default {
       </Providers>
     ),
   ],
-  args: mock,
+  args: {
+    createdAt: postMock.createdAt,
+    author: postMock.author,
+    categories: postMock.categories,
+  },
   argTypes: {
     createdAt: {
       control: {

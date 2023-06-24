@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Providers } from 'app/providers';
+import postMock from 'mock/postMock';
 
 import PostContent, { PostContentProps } from '.';
-import mock from './mock';
 
 export default {
   title: 'PostContent',
@@ -23,7 +23,7 @@ export default {
     ),
   ],
   args: {
-    content: mock,
+    content: postMock.content,
   },
 } as Meta<PostContentProps>;
 
