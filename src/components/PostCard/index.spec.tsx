@@ -12,7 +12,7 @@ describe('<PostCard>', () => {
           title="Title"
           subtitle="Subtitle"
           imageSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
-          slug="my-post"
+          id="my-post"
         />
       </Providers>
     );

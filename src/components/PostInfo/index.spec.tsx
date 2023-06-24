@@ -1,33 +1,37 @@
 import { render, screen } from '@testing-library/react';
 import { Providers } from 'app/providers';
+import postMock from 'mock/postMock';
 import { dateFormatter } from 'utils/dateFormatter';
 
 import PostInfo from '.';
-import mock from './mock';
 
 describe('<PostInfo />', () => {
   it('should render PostInfo correctly', () => {
     render(
       <Providers>
-        <PostInfo {...mock} />
+        <PostInfo
+          author={postMock.author}
+          categories={postMock.categories}
+          createdAt={postMock.createdAt}
+        />
       </Providers>
     );
     expect(screen.getByText(/Por/i)).toBeInTheDocument();
 
     expect(
-      screen.getByRole('link', { name: mock.author.displayName })
-    ).toHaveAttribute('href', `/author/${mock.author.slug}`);
+      screen.getByRole('link', { name: postMock.author.name })
+    ).toHaveAttribute('href', `/author/${postMock.author.slug}`);
 
-    expect(screen.getByText(dateFormatter(mock.createdAt))).toHaveAttribute(
+    expect(screen.getByText(dateFormatter(postMock.createdAt))).toHaveAttribute(
       'datetime',
-      mock.createdAt
+      postMock.createdAt.toString()
     );
 
     expect(
-      screen.getByRole('link', { name: mock.categories[0].displayName })
-    ).toHaveAttribute('href', `/category/${mock.categories[0].slug}`);
+      screen.getByRole('link', { name: postMock.categories[0].name })
+    ).toHaveAttribute('href', `/category/${postMock.categories[0].slug}`);
     expect(
-      screen.getByRole('link', { name: mock.categories[1].displayName })
-    ).toHaveAttribute('href', `/category/${mock.categories[1].slug}`);
+      screen.getByRole('link', { name: postMock.categories[1].name })
+    ).toHaveAttribute('href', `/category/${postMock.categories[1].slug}`);
   });
 });

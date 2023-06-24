@@ -29,5 +29,10 @@ describe('<GoToTop />', () => {
     expect(
       screen.getByRole('link', { name: 'Ir para o topo' })
     ).toHaveAttribute('href', '#');
+
+    fireEvent.scroll(window, { target: { scrollY: 99 } });
+    expect(
+      screen.queryByRole('link', { name: 'Ir para o topo' })
+    ).not.toBeInTheDocument();
   });
 });
