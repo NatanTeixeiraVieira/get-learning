@@ -29,12 +29,8 @@ export type Post = {
   allowComents: boolean;
   categories: Category[];
   title: string;
-  slug: string;
   content: string;
   tags: Tag[];
   id: string;
-  createdAt: {
-    _seconds: number;
-    _nanoseconds: number;
-  };
+  createdAt: number;
 };

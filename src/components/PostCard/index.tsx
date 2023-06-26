@@ -12,7 +12,6 @@ export type PostCardProps = {
   subtitle: string;
   imageSrc: string;
   id: string;
-  key: string;
 };
 
 export default function PostCard({
@@ -20,10 +19,9 @@ export default function PostCard({
   subtitle,
   imageSrc,
   id,
-  key,
 }: PostCardProps) {
   return (
-    <Container key={key}>
+    <Container>
       <Link href={`/post/${id}`}>
         <Image src={imageSrc} alt={title} width={320} height={180} />
       </Link>
