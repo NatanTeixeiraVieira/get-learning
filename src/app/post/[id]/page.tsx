@@ -46,19 +46,9 @@ type PostProps = {
 };
 
 export default async function Post({ params }: PostProps) {
-  let post: Post | null = null;
-  try {
-    post = await getDatas<Post>(`/post/${params.id}`, {
-      next: { revalidate: 10 },
-    });
-  } catch (err) {
-    return (
-      <div>
-        <p>Falha ao carregar os posts</p>
-        {err instanceof Error && <p>{err.message}</p>}
-      </div>
-    );
-  }
+  const post = await getDatas<Post>(`/post/${params.id}`, {
+    next: { revalidate: 10 },
+  });
 
   return (
     <>
