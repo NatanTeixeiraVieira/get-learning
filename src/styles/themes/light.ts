@@ -50,6 +50,13 @@ export default {
     default: 'all 0.3s ease',
     fast: 'all 0.1s ease',
   },
+  skeleton: {
+    color: {
+      default: '#e5e5e5',
+      animation: '#f5f5f5',
+    },
+    animation: '1.5s ease-in-out infinite',
+  },
   media: {
     tablet: '@media (max-width: 1020px)',
     mobile: '@media (max-width: 760px)',
