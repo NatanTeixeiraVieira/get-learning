@@ -1,17 +1,5 @@
-import { LoadingContainer, Image, Post, PostText, PostsList } from './styles';
+import SkeletonPostsList from 'components/SkeletonPostsList';
 
 export default function loading() {
-  return (
-    <LoadingContainer>
-      <PostsList>
-        {[...Array(24)].map((_, index) => (
-          <Post key={index}>
-            <Image />
-            <PostText height={1.5} />
-            <PostText height={1} />
-          </Post>
-        ))}
-      </PostsList>
-    </LoadingContainer>
-  );
+  return <SkeletonPostsList />;
 }
