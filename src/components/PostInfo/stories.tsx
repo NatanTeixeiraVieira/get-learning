@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Providers } from 'app/providers';
 import postMock from 'mock/postMock';
+import { Providers } from 'providers/providers';
 
 import PostInfo, { PostInfoProps } from '.';
 

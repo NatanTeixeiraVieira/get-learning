@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Providers } from 'app/providers';
+import { Providers } from 'providers/providers';
 
 import Header from '.';
 

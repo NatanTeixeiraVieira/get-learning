@@ -4,7 +4,7 @@ import { Open_Sans } from 'next/font/google';
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
-import { Providers } from './providers';
+import { Providers } from '../providers/providers';
 
 const openSans = Open_Sans({
   weight: ['400', '700', '800'],
