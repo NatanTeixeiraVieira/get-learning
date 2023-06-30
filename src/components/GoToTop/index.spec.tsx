@@ -1,26 +1,19 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { Providers } from 'app/providers';
+import { fireEvent, screen } from '@testing-library/react';
+import renderComponent from 'tests/renderComponent';
 
 import GoToTop from '.';
 
 describe('<GoToTop />', () => {
   it('should render without GoToTop on screen', () => {
-    render(
-      <Providers>
-        <GoToTop />
-      </Providers>
-    );
+    renderComponent(<GoToTop />);
 
     expect(
       screen.queryByRole('link', { name: 'Ir para o topo' })
     ).not.toBeInTheDocument();
   });
   it('should render GoToTop on screen correcly', () => {
-    render(
-      <Providers>
-        <GoToTop />
-      </Providers>
-    );
+    renderComponent(<GoToTop />);
+
     fireEvent.scroll(window, { target: { scrollY: 101 } });
 
     expect(

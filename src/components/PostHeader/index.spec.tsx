@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { Providers } from 'app/providers';
+import { screen } from '@testing-library/react';
 import postMock from 'mock/postMock';
+import renderComponent from 'tests/renderComponent';
 import { dateFormatter } from 'utils/dateFormatter';
 import { textFormatter } from 'utils/textFormatter';
 
@@ -8,17 +8,15 @@ import PostHeader from '.';
 
 describe('<PostHeader />', () => {
   it('should render PostHeader correctly', () => {
-    render(
-      <Providers>
-        <PostHeader
-          title={postMock.title}
-          subtitle={textFormatter(postMock.subtitle)}
-          imageSrc={postMock.author.avatar.url}
-          createdAt={postMock.createdAt}
-          author={postMock.author}
-          categories={postMock.categories}
-        />
-      </Providers>
+    renderComponent(
+      <PostHeader
+        title={postMock.title}
+        subtitle={textFormatter(postMock.subtitle)}
+        imageSrc={postMock.author.avatar.url}
+        createdAt={postMock.createdAt}
+        author={postMock.author}
+        categories={postMock.categories}
+      />
     );
     expect(
       screen.getByRole('heading', { name: postMock.title })

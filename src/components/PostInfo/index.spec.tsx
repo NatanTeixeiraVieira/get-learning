@@ -1,20 +1,18 @@
-import { render, screen } from '@testing-library/react';
-import { Providers } from 'app/providers';
+import { screen } from '@testing-library/react';
 import postMock from 'mock/postMock';
+import renderComponent from 'tests/renderComponent';
 import { dateFormatter } from 'utils/dateFormatter';
 
 import PostInfo from '.';
 
 describe('<PostInfo />', () => {
   it('should render PostInfo correctly', () => {
-    render(
-      <Providers>
-        <PostInfo
-          author={postMock.author}
-          categories={postMock.categories}
-          createdAt={postMock.createdAt}
-        />
-      </Providers>
+    renderComponent(
+      <PostInfo
+        author={postMock.author}
+        categories={postMock.categories}
+        createdAt={postMock.createdAt}
+      />
     );
     expect(screen.getByText(/Por/i)).toBeInTheDocument();
 

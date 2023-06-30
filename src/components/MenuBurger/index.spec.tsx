@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Providers } from 'app/providers';
+import renderComponent from 'tests/renderComponent';
 
 import light from 'styles/themes/light';
 
@@ -10,11 +10,7 @@ describe('<MenuBurger>', () => {
   const onclickMock = jest.fn();
 
   it('should has display block when device is mobile', () => {
-    render(
-      <Providers>
-        <MenuBurger onClick={onclickMock} showMenu={false} />
-      </Providers>
-    );
+    renderComponent(<MenuBurger onClick={onclickMock} showMenu={false} />);
 
     expect(screen.getByTestId('menuBurger')).toHaveStyleRule(
       'display',
@@ -28,11 +24,7 @@ describe('<MenuBurger>', () => {
   it('should call onclick function when it was clicked', async () => {
     const user = userEvent.setup();
 
-    render(
-      <Providers>
-        <MenuBurger onClick={onclickMock} showMenu={false} />
-      </Providers>
-    );
+    renderComponent(<MenuBurger onClick={onclickMock} showMenu={false} />);
 
     await user.click(screen.getByTestId('menuBurger'));
 
@@ -40,11 +32,7 @@ describe('<MenuBurger>', () => {
   });
 
   it('should has position relative when showMenu is false', () => {
-    render(
-      <Providers>
-        <MenuBurger onClick={onclickMock} showMenu={false} />
-      </Providers>
-    );
+    renderComponent(<MenuBurger onClick={onclickMock} showMenu={false} />);
 
     expect(screen.getByTestId('menuBurger')).toHaveStyle({
       position: 'relative',
@@ -52,11 +40,7 @@ describe('<MenuBurger>', () => {
   });
 
   it('should animate and has position fixed when showMenu is true', () => {
-    render(
-      <Providers>
-        <MenuBurger onClick={onclickMock} showMenu={true} />
-      </Providers>
-    );
+    renderComponent(<MenuBurger onClick={onclickMock} showMenu={true} />);
 
     const container = screen.getByTestId('menuBurger');
     const spans = container.querySelectorAll('span');

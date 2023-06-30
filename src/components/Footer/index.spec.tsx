@@ -1,15 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { Providers } from 'app/providers';
+import { screen } from '@testing-library/react';
+import renderComponent from 'tests/renderComponent';
 
 import Footer from '.';
 
-describe('<Footer/>', () => {
+describe('<Footer />', () => {
   it('shold render footer correctly', () => {
-    render(
-      <Providers>
-        <Footer />
-      </Providers>
-    );
+    renderComponent(<Footer />);
 
     expect(
       screen.getByText(/Feito com ❤️ por Natãn Teixeira Vieira/i)

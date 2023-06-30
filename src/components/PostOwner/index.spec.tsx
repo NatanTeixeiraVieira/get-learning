@@ -1,18 +1,16 @@
-import { render, screen } from '@testing-library/react';
-import { Providers } from 'app/providers';
+import { screen } from '@testing-library/react';
+import renderComponent from 'tests/renderComponent';
 
 import PostOwner from '.';
 
 describe('<PostOwner />', () => {
   it('should render PostOwner correcly', () => {
-    render(
-      <Providers>
-        <PostOwner
-          name="Natãn Teixeira Vieira"
-          avatarSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
-          description="My description"
-        />
-      </Providers>
+    renderComponent(
+      <PostOwner
+        name="Natãn Teixeira Vieira"
+        avatarSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
+        description="My description"
+      />
     );
     expect(
       screen.getByRole('img', { name: 'Avatar do proprietário do blog' })
@@ -27,15 +25,13 @@ describe('<PostOwner />', () => {
     expect(screen.getByText('My description')).toBeInTheDocument();
   });
   it('should not render description when showDescription prop was pessed false', () => {
-    render(
-      <Providers>
-        <PostOwner
-          name="Natãn Teixeira Vieira"
-          avatarSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
-          description="My description"
-          showDescription={false}
-        />
-      </Providers>
+    renderComponent(
+      <PostOwner
+        name="Natãn Teixeira Vieira"
+        avatarSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
+        description="My description"
+        showDescription={false}
+      />
     );
     expect(
       screen.getByRole('img', { name: 'Avatar do proprietário do blog' })

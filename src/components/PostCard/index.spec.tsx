@@ -1,20 +1,18 @@
-import { render, screen } from '@testing-library/react';
-import { Providers } from 'app/providers';
+import { screen } from '@testing-library/react';
+import renderComponent from 'tests/renderComponent';
 import { textFormatter } from 'utils/textFormatter';
 
 import PostCard from '.';
 
 describe('<PostCard>', () => {
   it('should render post card correctly', () => {
-    render(
-      <Providers>
-        <PostCard
-          title="Title"
-          subtitle="Subtitle"
-          imageSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
-          id="my-post"
-        />
-      </Providers>
+    renderComponent(
+      <PostCard
+        title="Title"
+        subtitle="Subtitle"
+        imageSrc="https://avatars.githubusercontent.com/NatanTeixeiraVieira"
+        id="my-post"
+      />
     );
 
     expect(screen.getAllByRole('link')[0]).toHaveAttribute(
