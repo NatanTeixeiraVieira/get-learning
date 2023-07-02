@@ -19,3 +19,15 @@ export const Wrapper = styled.article`
     }
   `}
 `;
+
+export const Tags = styled.section`
+  a {
+    &::after {
+      content: ', ';
+    }
+
+    &:last-child::after {
+      content: '';
+    }
+  }
+`;

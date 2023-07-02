@@ -1,11 +1,12 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import usePostsStore from 'store/posts';
 import { Post } from 'types/post';
 import getDatas from 'utils/getDatas';
 import { textFormatter } from 'utils/textFormatter';
 
-import { Wrapper } from './styles';
+import { Tags, Wrapper } from './styles';
 
 import GoToTop from 'components/GoToTop';
 import PostContent from 'components/PostContent';
@@ -30,15 +31,6 @@ export const generateMetadata = async ({
   }
 };
 
-export const generateStaticParams = async () => {
-  const { posts } = usePostsStore.getState().state;
-  const ids = posts.map((post) => ({
-    id: `${post.id}`,
-  }));
-
-  return ids;
-};
-
 type PostProps = {
   params: {
     id: string;
@@ -50,25 +42,44 @@ export default async function Post({ params }: PostProps) {
     next: { revalidate: 10 },
   });
 
+  if (!post.id) {
+    notFound();
+  }
+
   return (
-    <>
-      <Wrapper>
-        <GoToTop />
-        <PostOwner
-          avatarSrc={post.author.avatar.url}
-          name={post.author.name}
-          description={textFormatter(post.author.description)}
-        />
-        <PostHeader
-          title={post.title}
-          subtitle={textFormatter(post.subtitle)}
-          imageSrc={post.coverImage.url}
-          createdAt={post.createdAt}
-          author={post.author}
-          categories={post.categories}
-        />
-        <PostContent content={post.content} />
-      </Wrapper>
-    </>
+    <Wrapper>
+      <GoToTop />
+      <PostOwner
+        avatarSrc={post.author.avatar.url}
+        name={post.author.name}
+        description={textFormatter(post.author.description)}
+        slug={post.author.slug}
+        authorId={post.author.id}
+      />
+      <PostHeader
+        title={post.title}
+        subtitle={textFormatter(post.subtitle)}
+        imageSrc={post.coverImage.url}
+        createdAt={post.createdAt}
+        categories={post.categories}
+      />
+      <PostContent content={post.content} />
+      <Tags>
+        Tags:{' '}
+        {post.tags.map((tag) => (
+          <Link
+            href={{
+              pathname: `/tag/${tag.slug}`,
+              query: {
+                name: tag.name,
+              },
+            }}
+            key={`tags-${tag.slug}`}
+          >
+            {tag.name}
+          </Link>
+        ))}
+      </Tags>
+    </Wrapper>
   );
 }
