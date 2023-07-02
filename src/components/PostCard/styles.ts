@@ -8,7 +8,6 @@ export const Container = styled.div`
   ${({ theme }) => css`
     a {
       color: ${theme.colors.text.primary};
-      text-decoration: none;
       transition: ${theme.transition.default};
 
       img {
@@ -23,6 +22,9 @@ export const Container = styled.div`
     }
 
     ${HeadingContainer} {
+      a {
+        text-decoration: none;
+      }
       margin: ${theme.spacings.xxxsmall} 0 ${theme.spacings.xxsmall} 0;
       transition: ${theme.transition.default};
 

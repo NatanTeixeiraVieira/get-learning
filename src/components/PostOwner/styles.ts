@@ -43,5 +43,10 @@ export const Name = styled.span`
   ${({ theme }) => css`
     font-size: ${theme.font.sizes.medium};
     font-weight: ${theme.font.weights.bold};
+
+    a {
+      color: ${theme.colors.text.primary};
+      text-decoration: none;
+    }
   `}
 `;
