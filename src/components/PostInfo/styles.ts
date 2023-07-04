@@ -5,17 +5,6 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   ${({ theme }) => css`
     color: ${theme.colors.darkGray};
-    font-style: italic;
-  `}
-`;
-
-export const AuthorName = styled.span`
-  ${({ theme }) => css`
-    a {
-      color: ${theme.colors.text.primary};
-      font-style: normal;
-      font-weight: ${theme.font.weights.bold};
-    }
   `}
 `;
 
