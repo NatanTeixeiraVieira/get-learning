@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { Author, Category } from 'types/post';
+import { Category } from 'types/post';
 
 import { Wrapper } from './styles';
 
@@ -12,7 +12,6 @@ export type PostHeaderProps = {
   subtitle: string;
   imageSrc: string;
   createdAt: number;
-  author: Author;
   categories: Category[];
 };
 
@@ -21,7 +20,6 @@ export default function PostHeader({
   subtitle,
   imageSrc,
   createdAt,
-  author,
   categories,
 }: PostHeaderProps) {
   return (
@@ -34,7 +32,7 @@ export default function PostHeader({
         width={1500}
         height={750}
       />
-      <PostInfo createdAt={createdAt} author={author} categories={categories} />
+      <PostInfo createdAt={createdAt} categories={categories} />
       <hr />
     </Wrapper>
   );
