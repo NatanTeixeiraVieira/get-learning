@@ -6,9 +6,6 @@ import usePostsStore from 'store/posts';
 import { Post } from 'types/post';
 import getDatas from 'utils/getDatas';
 
-import { EndOfPosts } from './styles';
-
-import Heading from 'components/Heading';
 import SkeletonPostsList from 'components/SkeletonPostsList';
 
 export default function LoadMorePosts() {
@@ -46,11 +43,5 @@ export default function LoadMorePosts() {
     return <SkeletonPostsList />;
   }
 
-  return (
-    <EndOfPosts>
-      <Heading as="h3" size="small">
-        {postsEnd && 'Os posts acabaram'}
-      </Heading>
-    </EndOfPosts>
-  );
+  return null;
 }
