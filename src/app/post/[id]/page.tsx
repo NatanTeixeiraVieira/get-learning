@@ -41,8 +41,7 @@ export default async function Post({ params }: PostProps) {
   const post = await getDatas<Post>(`/post/${params.id}`, {
     next: { revalidate: 10 },
   });
-
-  if (!post.id) {
+  if (!post.title) {
     notFound();
   }
 
