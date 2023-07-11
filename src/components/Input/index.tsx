@@ -1,16 +1,29 @@
+'use client';
+
 import { InputHTMLAttributes, forwardRef, useId } from 'react';
 
-import { Eye } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 import { Container, FullInput, HelperText, Icon, InputField } from './styles';
 
 type InputProps = {
   label?: string;
   helperText?: string;
+  isDirty?: boolean;
+  showIcon?: boolean;
+  onClickIcon?: () => void;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 export default forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, type, helperText, ...props },
+  {
+    label,
+    type,
+    helperText,
+    isDirty = false,
+    showIcon = false,
+    onClickIcon,
+    ...props
+  },
   ref
 ) {
   const id = useId();
@@ -20,10 +33,14 @@ export default forwardRef<HTMLInputElement, InputProps>(function Input(
     <Container>
       {label && <label htmlFor={id}>{label}</label>}
       <FullInput hasError={hasError}>
-        <InputField type={type} id={id} ref={ref} {...props} />
-        {type === 'password' && (
-          <Icon>
-            <Eye />
+        <InputField type={type} id={props.id ?? id} ref={ref} {...props} />
+        {props.name === 'password' && isDirty && (
+          <Icon
+            onClick={onClickIcon}
+            title={showIcon ? 'Esconder senha' : 'Mostrar senha'}
+          >
+            {showIcon && <EyeOff />}
+            {!showIcon && <Eye />}
           </Icon>
         )}
       </FullInput>

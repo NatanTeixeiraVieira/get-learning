@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,10 +38,17 @@ export default function RegisterForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
+    defaultValues: { password: '' },
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const onSubmit = (data: RegisterFormData) => {
     console.log(data);
@@ -62,9 +70,12 @@ export default function RegisterForm() {
       />
       <Input
         label="Senha"
-        type="password"
-        {...register('password')}
+        type={showPassword ? 'text' : 'password'}
+        isDirty={dirtyFields.password}
         helperText={errors.password && errors.password.message}
+        showIcon={showPassword}
+        onClickIcon={handleShowPassword}
+        {...register('password')}
       />
       <Button text="Cadastrar-se" type="submit" />
     </RegisterFormContainer>
