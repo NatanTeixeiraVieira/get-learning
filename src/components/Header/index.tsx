@@ -35,7 +35,7 @@ export default function Header() {
             <Sun />
           </ThemeIcon>
           <HeaderLink href="/" name="Login" />
-          <HeaderLink href="/" name="Cadastrar" />
+          <HeaderLink href="/register" name="Cadastrar" />
         </ul>
       </HeaderContent>
       <OutOfMenu

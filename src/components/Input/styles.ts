@@ -2,9 +2,7 @@
 
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
-  ${({ theme }) => css``}
-`;
+export const Container = styled.div``;
 
 export const FullInput = styled.div<{ hasError: boolean }>`
   ${({ theme, hasError }) => css`

@@ -10,6 +10,8 @@ export default {
     links: '#0969da',
     mediumGray: '#DDDDDD',
     darkGray: '#777777',
+    placeholder: '#656565',
+    error: '#EF4444',
     text: {
       primary: '#333333',
       secondary: '#EFEFEF',

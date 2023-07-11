@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useId } from 'react';
+import { InputHTMLAttributes, forwardRef, useId } from 'react';
 
 import { Eye } from 'lucide-react';
 
@@ -9,12 +9,10 @@ type InputProps = {
   helperText?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export default function Input({
-  label,
-  type,
-  helperText,
-  ...rest
-}: InputProps) {
+export default forwardRef<HTMLInputElement, InputProps>(function Input(
+  { label, type, helperText, ...props },
+  ref
+) {
   const id = useId();
   const hasError = !!helperText;
 
@@ -22,7 +20,7 @@ export default function Input({
     <Container>
       {label && <label htmlFor={id}>{label}</label>}
       <FullInput hasError={hasError}>
-        <InputField type={type} id={id} {...rest} />
+        <InputField type={type} id={id} ref={ref} {...props} />
         {type === 'password' && (
           <Icon>
             <Eye />
@@ -32,4 +30,4 @@ export default function Input({
       {hasError && <HelperText>{helperText}</HelperText>}
     </Container>
   );
-}
+});
