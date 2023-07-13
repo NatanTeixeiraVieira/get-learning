@@ -3,34 +3,55 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 65vh;
+`;
+
+export const Animation404Container = styled.div`
   ${({ theme }) => css`
     display: flex;
-    justify-content: center;
-    height: 80vh;
+    align-items: center;
+    gap: ${theme.spacings.xsmall};
   `}
 `;
 
 export const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  a {
-    ${({ theme }) => css`
-      color: ${theme.colors.text.secondary};
-      text-decoration: none;
-      padding: ${theme.spacings.xsmall} ${theme.spacings.medium};
-      background-color: ${theme.colors.primary};
-      border-radius: ${theme.border.radius};
-    `}
-  }
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: ${theme.spacings.huge};
+  `}
 `;
 
 export const Description = styled.p`
   ${({ theme }) => css`
     font-size: ${theme.font.sizes.medium};
     font-weight: ${theme.font.weights.bold};
-    padding: ${theme.spacings.xsmall} 0 ${theme.spacings.medium} 0;
+    margin: ${theme.spacings.medium};
+  `}
+`;
+
+export const Navigation = styled.div`
+  ${({ theme }) => css`
+    display: flex;
+    gap: ${theme.spacings.xsmall};
+    width: 100%;
+    justify-content: center;
+
+    a {
+      color: ${theme.colors.text.secondary};
+      padding: ${theme.spacings.xsmall} ${theme.spacings.medium};
+      background-color: ${theme.colors.primary};
+      border-radius: ${theme.border.radius};
+      width: 50%;
+      text-align: center;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
   `}
 `;

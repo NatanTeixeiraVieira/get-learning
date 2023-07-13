@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Providers } from 'providers/providers';
 
-import NotFound from './page';
+import NotFound from '.';
 
 export default {
   title: 'NotFound',
