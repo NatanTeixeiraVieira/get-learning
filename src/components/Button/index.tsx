@@ -9,6 +9,14 @@ type ButtonProps = {
   width?: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function Button({ text, width = '100%' }: ButtonProps) {
-  return <ButtonContainer width={width}>{text}</ButtonContainer>;
+export default function Button({
+  text,
+  width = '100%',
+  ...props
+}: ButtonProps) {
+  return (
+    <ButtonContainer width={width} {...props}>
+      {text}
+    </ButtonContainer>
+  );
 }
