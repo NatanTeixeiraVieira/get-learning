@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { registerWithCredentials } from 'utils/auth';
 import { userName, email, password } from 'utils/validations';
 import { z } from 'zod';
 
@@ -36,8 +37,12 @@ export default function RegisterForm() {
     setShowPassword((prev) => !prev);
   };
 
-  const onSubmit = (data: RegisterFormData) => {
-    console.log(data);
+  const onSubmit = async ({ email, password }: RegisterFormData) => {
+    const response = await registerWithCredentials(email, password);
+
+    if (response?.message) {
+      alert(response.message);
+    }
   };
 
   return (
