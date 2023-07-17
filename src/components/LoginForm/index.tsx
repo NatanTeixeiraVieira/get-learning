@@ -1,9 +1,12 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { loginWithCredentials } from 'utils/auth';
 import { email, password } from 'utils/validations';
 import { z } from 'zod';
 
@@ -30,13 +33,22 @@ export default function LoginForm() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const handleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(data);
+  const onSubmit = async ({ email, password }: LoginFormData) => {
+    const callbackUrl = searchParams.get('callbackUrl');
+    const response = await loginWithCredentials(email, password);
+    if (response?.error) {
+      alert(response.error);
+      return;
+    }
+
+    router.push(callbackUrl ?? '/');
   };
 
   return (
@@ -44,8 +56,8 @@ export default function LoginForm() {
       <Input
         label="Email"
         type="email"
-        {...register('email')}
         helperText={errors.email && errors.email.message}
+        {...register('email')}
       />
       <Input
         label="Senha"
