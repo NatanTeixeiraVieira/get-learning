@@ -6,12 +6,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { EyeOff, Eye } from 'lucide-react';
 import { loginWithCredentials } from 'utils/auth';
 import { email, password } from 'utils/validations';
 import { z } from 'zod';
 
-import Button from 'components/Button';
-import Input from 'components/Input';
+import { Button } from 'components/Button';
+import { Input } from 'components/Input';
 
 import { LoginFormContainer } from './style';
 
@@ -26,7 +27,7 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields },
+    formState: { errors, dirtyFields, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { password: '' },
@@ -53,22 +54,39 @@ export default function LoginForm() {
 
   return (
     <LoginFormContainer onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        label="Email"
-        type="email"
-        helperText={errors.email && errors.email.message}
-        {...register('email')}
-      />
-      <Input
-        label="Senha"
-        type={showPassword ? 'text' : 'password'}
-        isDirty={dirtyFields.password}
-        helperText={errors.password && errors.password.message}
-        showIcon={showPassword}
-        onClickIcon={handleShowPassword}
-        {...register('password')}
-      />
-      <Button text="Entrar" type="submit" />
+      <Input.Root>
+        <Input.Label>Email</Input.Label>
+        <Input.Input type="email" {...register('email')} />
+        {errors.email && (
+          <Input.HelperText>{errors.email.message}</Input.HelperText>
+        )}
+      </Input.Root>
+      <Input.Root>
+        <Input.Label>Senha</Input.Label>
+        <Input.Input
+          type={showPassword ? 'text' : 'password'}
+          {...register('password')}
+        >
+          {dirtyFields.password &&
+            (showPassword ? (
+              <Input.Icon
+                icon={EyeOff}
+                onClick={handleShowPassword}
+                title="Esconder senha"
+              />
+            ) : (
+              <Input.Icon icon={Eye} onClick={handleShowPassword} />
+            ))}
+        </Input.Input>
+
+        {errors.password && (
+          <Input.HelperText>{errors.password.message}</Input.HelperText>
+        )}
+      </Input.Root>
+      <Button.Root type="submit" disabled={isSubmitting}>
+        {isSubmitting && <Button.IconSpin />}
+        {!isSubmitting && 'Entrar'}
+      </Button.Root>
     </LoginFormContainer>
   );
 }

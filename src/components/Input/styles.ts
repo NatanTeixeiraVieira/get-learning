@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div``;
 
-export const FullInput = styled.div<{ hasError: boolean }>`
+export const InputFullContainer = styled.div<{ hasError: boolean | undefined }>`
   ${({ theme, hasError }) => css`
     display: flex;
     align-items: center;
@@ -32,7 +32,7 @@ export const InputField = styled.input`
   `}
 `;
 
-export const Icon = styled.div`
+export const IconContainer = styled.div`
   ${({ theme }) => css`
     display: flex;
     align-items: center;

@@ -43,10 +43,14 @@ export const Navigation = styled.div`
 
     a {
       color: ${theme.colors.text.secondary};
-      padding: ${theme.spacings.xsmall} ${theme.spacings.medium};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: ${theme.spacings.xsmall};
       background-color: ${theme.colors.primary};
       border-radius: ${theme.border.radius};
       width: 50%;
+      height: 3rem;
       text-align: center;
 
       &:hover {
