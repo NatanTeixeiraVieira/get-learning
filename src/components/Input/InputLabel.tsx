@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 
 type InputLabelProps = {
   children: ReactNode;
-  id?: string;
+  htmlFor?: string;
 };
 
-export default function InputLabel({ children, id }: InputLabelProps) {
-  return <label htmlFor={id}>{children}</label>;
+export default function InputLabel({ children, htmlFor }: InputLabelProps) {
+  return <label htmlFor={htmlFor}>{children}</label>;
 }

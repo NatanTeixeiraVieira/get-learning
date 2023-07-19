@@ -55,15 +55,16 @@ export default function LoginForm() {
   return (
     <LoginFormContainer onSubmit={handleSubmit(onSubmit)}>
       <Input.Root>
-        <Input.Label>Email</Input.Label>
-        <Input.Input type="email" {...register('email')} />
+        <Input.Label htmlFor="email">Email</Input.Label>
+        <Input.Input id="email" type="email" {...register('email')} />
         {errors.email && (
           <Input.HelperText>{errors.email.message}</Input.HelperText>
         )}
       </Input.Root>
       <Input.Root>
-        <Input.Label>Senha</Input.Label>
+        <Input.Label htmlFor="password">Senha</Input.Label>
         <Input.Input
+          id="password"
           type={showPassword ? 'text' : 'password'}
           {...register('password')}
         >
