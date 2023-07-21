@@ -1,35 +1,37 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import usePostsStore from 'store/posts';
 import { Post } from 'types/post';
-import getDatas from 'utils/getDatas';
+import { loadMorePosts } from 'utils/firestore';
 
-import SkeletonPostsList from 'components/SkeletonPostsList';
+import PostCard from 'components/PostCard';
+import SkeletonPostList from 'components/SkeletonPostsList';
 
 export default function LoadMorePosts() {
-  const [postsEnd, setPostsEnd] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [newPosts, setNewPosts] = useState<Post[]>([]);
   const {
-    actions: { addPosts },
+    state: { posts },
   } = usePostsStore();
+  const startAfter = useRef(posts.at(-1)?.createdAt);
 
   const handleLoadMorePosts = useCallback(async () => {
     const scrollPositionAllowRequest = window.scrollY * 2 + window.innerHeight;
     const documentHeight = document.documentElement.offsetHeight;
-    if (scrollPositionAllowRequest >= documentHeight && !postsEnd) {
-      try {
-        setIsLoading(true);
-        const newPosts = await getDatas<Post[]>('/loadMorePosts');
-        addPosts(newPosts);
-      } catch (err) {
-        setPostsEnd(true);
-      } finally {
+    if (scrollPositionAllowRequest >= documentHeight) {
+      setIsLoading(true);
+      const morePosts = await loadMorePosts(startAfter.current);
+      startAfter.current = morePosts?.at(-1)?.createdAt;
+      if (!morePosts) {
         setIsLoading(false);
+        return;
       }
+      setNewPosts(morePosts);
+      setIsLoading(false);
     }
-  }, [addPosts, postsEnd]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', handleLoadMorePosts);
@@ -39,9 +41,21 @@ export default function LoadMorePosts() {
     };
   }, [handleLoadMorePosts]);
 
-  if (isLoading && !postsEnd) {
-    return <SkeletonPostsList />;
+  if (isLoading) {
+    return <SkeletonPostList.Posts />;
   }
 
-  return null;
+  return (
+    <>
+      {newPosts.map((post) => (
+        <PostCard
+          key={post.id}
+          title={post.title}
+          subtitle={post.subtitle}
+          imageSrc={post.coverImage.url}
+          id={post.id}
+        />
+      ))}
+    </>
+  );
 }
