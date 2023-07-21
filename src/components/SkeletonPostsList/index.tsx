@@ -1,17 +1,9 @@
-import { LoadingContainer, Image, Post, PostText, PostsList } from './styles';
+import SkeletonPosts from './SkeletonPosts';
+import SkeletonPostsListRoot from './SkeletonRoot';
 
-export default function SkeletonPostsList() {
-  return (
-    <LoadingContainer>
-      <PostsList>
-        {[...Array(24)].map((_, index) => (
-          <Post key={index}>
-            <Image />
-            <PostText height={1.5} />
-            <PostText height={1} />
-          </Post>
-        ))}
-      </PostsList>
-    </LoadingContainer>
-  );
-}
+const SkeletonPostList = {
+  Root: SkeletonPostsListRoot,
+  Posts: SkeletonPosts,
+};
+
+export default SkeletonPostList;
