@@ -6,7 +6,7 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ['avatars.githubusercontent.com', 'res.cloudinary.com'],
+    domains: ['firebasestorage.googleapis.com'],
   },
 };
 
