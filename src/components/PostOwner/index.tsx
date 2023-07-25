@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { OwnerInfo, Wrapper, Name } from './styles';
 
 export type PostOwnerProps = {
-  avatarSrc: string;
+  avatarSrc: string | undefined;
   name: string;
-  description: string;
+  description: string | undefined;
   showDescription?: boolean;
   slug: string;
   authorId: string;
@@ -24,7 +24,7 @@ export default function PostOwner({
     <Wrapper>
       <Link href={`/${slug}/${authorId}`}>
         <Image
-          src={avatarSrc}
+          src={avatarSrc ?? '/assets/profile.png'}
           alt="Avatar do proprietário do blog"
           width={130}
           height={130}
@@ -34,7 +34,7 @@ export default function PostOwner({
         <Name>
           <Link href={`/${slug}/${authorId}`}>{name}</Link>
         </Name>
-        {showDescription && <span>{description}</span>}
+        {showDescription && description && <span>{description}</span>}
       </OwnerInfo>
     </Wrapper>
   );

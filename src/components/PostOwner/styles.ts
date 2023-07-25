@@ -46,7 +46,10 @@ export const Name = styled.span`
 
     a {
       color: ${theme.colors.text.primary};
-      text-decoration: none;
+
+      &:hover {
+        text-decoration: none;
+      }
     }
   `}
 `;

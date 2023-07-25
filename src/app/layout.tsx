@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   },
   description:
     'Adquira conhecimento sobre as mais diversas áreas lendo e compartilhando posts dentro do GetLearning',
+  icons: '/assets/favicon-dark.png',
 };
 
 export default function RootLayout({
