@@ -2,7 +2,8 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from 'lib/firebaseConfig';
+
+import { auth } from './firebaseWebConfig';
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -15,6 +16,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Senha', type: 'password' },
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(credentials): Promise<any> {
         if (credentials?.email && credentials.password) {
           return await signInWithEmailAndPassword(
@@ -47,9 +49,9 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  debug: process.env.NODE_ENV === 'development',
   session: {
     strategy: 'jwt',
   },
   secret: process.env.SECRET,
-  debug: process.env.NODE_ENV === 'development',
 };

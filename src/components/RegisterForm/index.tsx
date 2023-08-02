@@ -1,63 +1,81 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
-import { registerWithCredentials } from 'utils/auth';
-import { userName, email, password } from 'utils/validations';
-import { z } from 'zod';
+import loginWithCredentials from 'services/loginWithCredentials';
+import registerWithCredentials from 'services/registerWithCredentials';
+import { RegisterDatas } from 'types/register';
+import translateText from 'utils/translateText';
+import { registerFormSchema } from 'utils/validations';
 
 import { RegisterFormContainer } from './styles';
 
 import { Button } from 'components/Button';
 import { Input } from 'components/Input';
 
-const registerFormSchema = z.object({
-  userName,
-  email,
-  password,
-});
-
-type RegisterFormData = z.infer<typeof registerFormSchema>;
-
 export default function RegisterForm() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, dirtyFields },
-  } = useForm<RegisterFormData>({
+  } = useForm<RegisterDatas>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: { password: '' },
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const router = useRouter();
+
   const handleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const onSubmit = async ({ email, password }: RegisterFormData) => {
-    const response = await registerWithCredentials(email, password);
+  const onSubmit = async ({ userName, email, password }: RegisterDatas) => {
+    const response = await registerWithCredentials(userName, email, password);
 
-    if (response?.message) {
-      alert(response.message);
+    if (response.status === 201) {
+      const loginResponse = await loginWithCredentials(email, password);
+      if (loginResponse?.ok) {
+        router.push('/');
+        return;
+      }
+      toast.warning(
+        'Cadastro concluído, mas houve falha ao logar. Por favor tente logar mais tarde.'
+      );
     }
+
+    const translatedResponse = await translateText(response.datas.message);
+    toast.error(translatedResponse);
   };
 
   return (
-    <RegisterFormContainer onSubmit={handleSubmit(onSubmit)}>
+    <RegisterFormContainer onSubmit={handleSubmit(onSubmit)} noValidate>
       <Input.Root>
         <Input.Label htmlFor="userName">Nome de usuário</Input.Label>
-        <Input.Input id="userName" type="text" {...register('userName')} />
+        <Input.Input
+          id="userName"
+          type="text"
+          disabled={isSubmitting}
+          {...register('userName')}
+        />
         {errors.userName && (
           <Input.HelperText>{errors.userName.message}</Input.HelperText>
         )}
       </Input.Root>
       <Input.Root>
         <Input.Label htmlFor="email">Email</Input.Label>
-        <Input.Input id="email" type="email" {...register('email')} />
+        <Input.Input
+          id="email"
+          type="email"
+          disabled={isSubmitting}
+          {...register('email')}
+        />
         {errors.email && (
           <Input.HelperText>{errors.email.message}</Input.HelperText>
         )}
@@ -67,6 +85,7 @@ export default function RegisterForm() {
         <Input.Input
           id="password"
           type={showPassword ? 'text' : 'password'}
+          disabled={isSubmitting}
           {...register('password')}
         >
           {dirtyFields.password &&
