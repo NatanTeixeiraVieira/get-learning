@@ -2,27 +2,27 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
 import { Post } from 'types/post';
-import getDatas from 'utils/getDatas';
+import fetcher from 'utils/fetcher';
 
 import { Container } from './styles';
 
 import Heading from 'components/Heading';
 import PostGrid from 'components/PostGrid';
-
 export const generateMetadata = async ({
   params,
   searchParams,
 }: TagProps): Promise<Metadata> => {
   try {
-    const tagPosts = await getDatas<Post[]>(
+    const tagPosts = await fetcher<Post[]>(
       `/posts/classification/tags?name=${searchParams.name}&slug=${params.tagSlug}`,
       {
         next: { revalidate: 10 },
       }
     );
-    if (!tagPosts[0]) {
+    if (!tagPosts.datas[0]) {
       return {
         title: 'Página não encontrada',
       };
@@ -48,20 +48,25 @@ type TagProps = {
 };
 
 export default async function Tag({ params, searchParams }: TagProps) {
-  const tagPosts = await getDatas<Post[]>(
+  if (!searchParams.name) {
+    notFound();
+  }
+  const tagPosts = await fetcher<Post[]>(
     `/posts/classification/tags?name=${searchParams.name}&slug=${params.tagSlug}`,
     {
       next: { revalidate: 10 },
     }
   );
 
-  if (!tagPosts[0]) {
+  if (!tagPosts.datas[0]) {
     notFound();
   }
 
+  usePostsStore.setState({ state: { posts: tagPosts.datas } });
+
   return (
     <Container>
-      <InitializerPostsStore posts={tagPosts} />
+      <InitializerPostsStore posts={tagPosts.datas} />
       <Heading>
         <Link
           href={{

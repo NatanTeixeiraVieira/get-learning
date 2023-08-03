@@ -2,8 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { Author } from 'types/author';
 import { Post } from 'types/post';
-import getDatas from 'utils/getDatas';
+import fetcher from 'utils/fetcher';
 import { textFormatter } from 'utils/textFormatter';
 
 import { Tags, Wrapper } from './styles';
@@ -17,12 +18,15 @@ export const generateMetadata = async ({
   params,
 }: PostProps): Promise<Metadata> => {
   try {
-    const post = await getDatas<Post>(`/post/${params.id}`, {
+    const post = await fetcher<Post>(`/post/${params.id}`, {
+      next: { revalidate: 10 },
+    });
+    const author = await fetcher<Author>(`/author/${post.datas.authorId}`, {
       next: { revalidate: 10 },
     });
     return {
-      title: `${post.title} - ${post.author.name}`,
-      description: post.subtitle,
+      title: `${post.datas.title} - ${author.datas.name}`,
+      description: post.datas.excerpt,
     };
   } catch (err) {
     return {
@@ -38,34 +42,42 @@ type PostProps = {
 };
 
 export default async function Post({ params }: PostProps) {
-  const post = await getDatas<Post>(`/post/${params.id}`, {
+  const post = await fetcher<Post>(`/post/${params.id}`, {
     next: { revalidate: 10 },
   });
-  if (!post.title) {
+  if (!post.ok) {
     notFound();
+  }
+
+  const author = await fetcher<Author>(`/author/id/${post.datas.authorId}`, {
+    next: { revalidate: 10 },
+  });
+
+  if (!author.ok) {
+    throw new Error('Algo deu errado. Por favor tente novamente mais tarde.');
   }
 
   return (
     <Wrapper>
       <GoToTop />
       <PostOwner
-        avatarSrc={post.author.avatar.url}
-        name={post.author.name}
-        description={textFormatter(post.author.description)}
-        slug={post.author.slug}
-        authorId={post.author.id}
+        avatarSrc={author.datas.avatar?.url}
+        name={author.datas.name}
+        description={textFormatter(author.datas.description)}
+        slug={author.datas.slug}
+        authorId={author.datas.authorId}
       />
       <PostHeader
-        title={post.title}
-        subtitle={textFormatter(post.subtitle)}
-        imageSrc={post.coverImage.url}
-        createdAt={post.createdAt}
-        categories={post.categories}
+        title={post.datas.title}
+        subtitle={textFormatter(post.datas.excerpt)}
+        imageSrc={post.datas.coverImage.url}
+        createdAt={post.datas.createdAt}
+        category={post.datas.category}
       />
-      <PostContent content={post.content} />
+      <PostContent content={post.datas.content} />
       <Tags>
         Tags:{' '}
-        {post.tags.map((tag) => (
+        {post.datas.tags.map((tag) => (
           <Link
             href={{
               pathname: `/tag/${tag.slug}`,

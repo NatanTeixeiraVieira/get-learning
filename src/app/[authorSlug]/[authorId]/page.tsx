@@ -1,29 +1,33 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { getCurrentUser } from 'lib/session';
+import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
+import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
+import { Author } from 'types/author';
 import { Post } from 'types/post';
-import getDatas from 'utils/getDatas';
+import fetcher from 'utils/fetcher';
 import { textFormatter } from 'utils/textFormatter';
 
+import { Button } from 'components/Button';
+import Heading from 'components/Heading';
 import PostGrid from 'components/PostGrid';
 import PostOwner from 'components/PostOwner';
 
-import { Wrapper } from './style';
+import { NoPostFound, Wrapper } from './style';
 
 export const generateMetadata = async ({
   params,
 }: AuthorProps): Promise<Metadata> => {
   try {
-    const authorPosts = await getDatas<Post[]>(
-      `/posts/author/${params.authorId}`,
-      {
-        next: { revalidate: 10 },
-      }
-    );
+    const author = await fetcher<Author>(`/author/${params.authorId}`, {
+      next: { revalidate: 10 },
+    });
     return {
-      title: `${authorPosts[0].author.name}`,
-      description: authorPosts[0].author.description,
+      title: `${author.datas.name}`,
+      description: author.datas.description,
     };
   } catch (err) {
     return {
@@ -40,27 +44,61 @@ type AuthorProps = {
 };
 
 export default async function Author({ params }: AuthorProps) {
-  const authorPosts = await getDatas<Post[]>(
-    `/posts/author/${params.authorId}`,
-    {
-      next: { revalidate: 10 },
-    }
-  );
-  if (!authorPosts[0]) {
+  const authorPosts = await fetcher<Post[]>(`/posts/author/${params.authorId}`);
+
+  if (!authorPosts.datas) {
     notFound();
   }
 
+  const author = await fetcher<Author>(`/author/id/${params.authorId}`, {
+    next: { revalidate: 10 },
+  });
+
+  if (!author.datas) {
+    notFound();
+  }
+
+  if (authorPosts.datas.length === 0) {
+    return (
+      <Wrapper>
+        <PostOwner
+          avatarSrc={author.datas.avatar?.url}
+          name={author.datas.name}
+          description={textFormatter(author.datas.description)}
+          slug={author.datas.slug}
+          authorId={author.datas.authorId}
+        />
+        <NoPostFound>
+          <Heading>Nenhum post encontrado</Heading>
+          <p>Você ainda não publicou nada ainda</p>
+          <Link href="/makePost">
+            <Button.Root type="button" width="10rem">
+              Publicar
+            </Button.Root>
+          </Link>
+        </NoPostFound>
+      </Wrapper>
+    );
+  }
+
+  const session = await getCurrentUser();
+  const authorLoggedInfos = (await getAuthorLoggedInfos(session?.email)).datas;
+
+  const isPostOwner = authorLoggedInfos?.authorId === author.datas.authorId;
+
+  usePostsStore.setState({ state: { posts: authorPosts.datas } });
+
   return (
     <Wrapper>
-      <InitializerPostsStore posts={authorPosts} />
+      <InitializerPostsStore posts={authorPosts.datas} />
       <PostOwner
-        avatarSrc={authorPosts[0].author.avatar.url}
-        name={authorPosts[0].author.name}
-        description={textFormatter(authorPosts[0].author.description)}
-        slug={authorPosts[0].author.slug}
-        authorId={authorPosts[0].author.id}
+        avatarSrc={author.datas.avatar?.url}
+        name={author.datas.name}
+        description={textFormatter(author.datas.description)}
+        slug={author.datas.slug}
+        authorId={author.datas.authorId}
       />
-      <PostGrid />
+      <PostGrid isPostOwner={isPostOwner} />
     </Wrapper>
   );
 }
