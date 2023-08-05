@@ -1,33 +1,33 @@
 import { NextResponse } from 'next/server';
 
-import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
-import { db } from 'lib/firebaseConfig';
+import { postsPerRequest } from 'constants/api';
+import { FirebaseError } from 'firebase-admin';
+import admin from 'lib/firebaseAdminConfig';
+import { Post } from 'types/post';
 
 export async function GET() {
-  const postsPerRequest = 24;
-  const postsCollectionRef = collection(db, 'posts');
-  const q = query(
-    postsCollectionRef,
-    orderBy('createdAt', 'desc'),
-    limit(postsPerRequest)
-  );
-
-  try {
-    const postsSnap = await getDocs(q);
-    if (postsSnap.empty) {
-      return new NextResponse('No results', { status: 404 });
-    }
-
-    const posts = postsSnap.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    return new NextResponse(JSON.stringify(posts), {
-      status: 200,
+  const response = admin
+    .firestore()
+    .collection('posts')
+    .orderBy('createdAt', 'desc')
+    .limit(postsPerRequest)
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        return NextResponse.json({ message: 'No results' }, { status: 404 });
+      }
+      const posts = snapshot.docs.map(
+        (doc) =>
+          ({
+            ...doc.data(),
+            postId: doc.id,
+          } as Post)
+      );
+      return NextResponse.json(posts, { status: 200 });
+    })
+    .catch((error: FirebaseError) => {
+      return NextResponse.json({ message: error.message }, { status: 500 });
     });
-  } catch (error) {
-    return new NextResponse(JSON.stringify(error), {
-      status: 500,
-    });
-  }
+
+  return response;
 }
