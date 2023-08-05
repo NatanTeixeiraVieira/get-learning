@@ -2,27 +2,37 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
 import { Post } from 'types/post';
-import getDatas from 'utils/getDatas';
+import fetcher from 'utils/fetcher';
 
 import { Container } from './styles';
 
 import Heading from 'components/Heading';
 import PostGrid from 'components/PostGrid';
 
+type CategoryProps = {
+  params: {
+    categorySlug: string;
+  };
+  searchParams: {
+    name: string;
+  };
+};
+
 export const generateMetadata = async ({
   params,
   searchParams,
 }: CategoryProps): Promise<Metadata> => {
   try {
-    const categoryPosts = await getDatas<Post[]>(
-      `/posts/classification/categories?name=${searchParams.name}&slug=${params.categorySlug}`,
+    const categoryPosts = await fetcher<Post[]>(
+      `/posts/classification/category?name=${searchParams.name}&slug=${params.categorySlug}`,
       {
         next: { revalidate: 10 },
       }
     );
-    if (!categoryPosts[0]) {
+    if (!categoryPosts.datas[0]) {
       return {
         title: 'Página não encontrada',
       };
@@ -38,35 +48,28 @@ export const generateMetadata = async ({
   }
 };
 
-type CategoryProps = {
-  params: {
-    categorySlug: string;
-  };
-  searchParams: {
-    name: string;
-  };
-};
-
 export default async function Category({
   params,
   searchParams,
 }: CategoryProps) {
-  const categoryPosts = await getDatas<Post[]>(
-    `/posts/classification/categories?name=${searchParams.name}&slug=${params.categorySlug}`,
+  if (!searchParams.name) {
+    notFound();
+  }
+  const categoryPosts = await fetcher<Post[]>(
+    `/posts/classification/category?name=${searchParams.name}&slug=${params.categorySlug}`,
     {
       next: { revalidate: 10 },
     }
   );
-
-  console.log(categoryPosts);
-
-  if (!categoryPosts[0]) {
+  if (!categoryPosts.datas[0]) {
     notFound();
   }
 
+  usePostsStore.setState({ state: { posts: categoryPosts.datas } });
+
   return (
     <Container>
-      <InitializerPostsStore posts={categoryPosts} />
+      <InitializerPostsStore posts={categoryPosts.datas} />
       <Heading>
         <Link
           href={{
