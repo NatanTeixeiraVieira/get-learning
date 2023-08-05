@@ -6,14 +6,18 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import JoditEditor, { Jodit } from 'jodit-react';
 import { ImagePlus, Plus, X } from 'lucide-react';
-import { addPost, getAuthorLoggedInfos } from 'services/firestore';
+import { addPost } from 'services/addPost';
+import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
+import { MakePostData } from 'types/addPostDatas';
 import categoriesList from 'utils/categoriesList';
+import translateText from 'utils/translateText';
 import { makePostFormSchema, textEditorSchema } from 'utils/validations';
-import { ZodError, z } from 'zod';
+import { ZodError } from 'zod';
 
 import {
   AllowComents,
@@ -33,15 +37,13 @@ import {
 import { Button } from 'components/Button';
 import { Input } from 'components/Input';
 
-export type MakePostFormData = z.infer<typeof makePostFormSchema>;
-
 export default function MakePostForm() {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, dirtyFields, isSubmitting },
-  } = useForm<MakePostFormData>({
+  } = useForm<MakePostData>({
     resolver: zodResolver(makePostFormSchema),
   });
   const [editorError, setEditorError] = useState<string | null>(null);
@@ -92,14 +94,16 @@ export default function MakePostForm() {
     setTags((prev) => prev.filter((item) => item !== id));
   };
 
-  const onSubmit = async (data: MakePostFormData) => {
+  const onSubmit = async (data: MakePostData) => {
     try {
       const authorLoggedInfos = await getAuthorLoggedInfos(
         session.data?.user?.email
       );
 
       if (!authorLoggedInfos) {
-        alert('Falha ao enviar o post. Por favor, tente novamente mais tarde.');
+        toast.error(
+          'Falha ao enviar o post. Por favor, tente novamente mais tarde.'
+        );
         return;
       }
       setEditorError(null);
@@ -109,15 +113,19 @@ export default function MakePostForm() {
         ...data,
         tags,
         content: editorContent,
-        authorId: authorLoggedInfos.authorId,
+        authorId: authorLoggedInfos.datas.authorId,
       });
+      const translatedResponse = (
+        await translateText(response.datas.message)
+      ).toLowerCase();
 
-      if (response instanceof Error) {
-        alert(response);
+      if (response.ok) {
+        toast.success(`Post ${translatedResponse}.`);
+        router.push('/');
+        return;
       }
 
-      alert('Post enviado com sucesso!');
-      router.push('/');
+      toast.error(translatedResponse);
     } catch (error) {
       if (error instanceof ZodError) {
         const validationError = error.errors[0].message;
