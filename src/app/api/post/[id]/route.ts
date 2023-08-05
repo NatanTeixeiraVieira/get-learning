@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from 'lib/firebaseConfig';
+import { FirebaseError } from 'firebase-admin';
+import admin from 'lib/firebaseAdminConfig';
+import { Post } from 'types/post';
 
 type Context = {
   params: {
@@ -10,20 +11,26 @@ type Context = {
 };
 
 export async function GET(request: NextRequest, { params }: Context) {
-  const postRef = doc(db, 'posts', params.id);
-  try {
-    const postSnap = await getDoc(postRef);
-    if (!postSnap.exists()) {
-      return new NextResponse('No results', { status: 404 });
-    }
+  const response = admin
+    .firestore()
+    .collection('posts')
+    .doc(params.id)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return NextResponse.json({ message: 'No results' }, { status: 404 });
+      }
+      const post = {
+        ...doc.data(),
+        postId: doc.id,
+      } as Post;
 
-    const post = { ...postSnap.data(), id: postSnap.id };
-    return new NextResponse(JSON.stringify(post), {
-      status: 200,
+      return NextResponse.json(post, { status: 200 });
+    })
+    .catch((error: FirebaseError) => {
+      console.log(error);
+      return NextResponse.json({ message: error.message }, { status: 500 });
     });
-  } catch (error) {
-    return new NextResponse(JSON.stringify(error), {
-      status: 500,
-    });
-  }
+
+  return response;
 }
