@@ -1,9 +1,14 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Container, LoginContent, UtilsPages } from './styles';
 
 import Heading from 'components/Heading';
 import LoginForm from 'components/LoginForm';
+
+export const metadata: Metadata = {
+  title: 'Entrar',
+};
 
 export default function Login() {
   return (
