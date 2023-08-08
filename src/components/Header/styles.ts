@@ -22,6 +22,8 @@ export const HeaderContent = styled.div<{ showMenu: boolean }>`
     align-items: center;
     justify-content: space-between;
     background-color: ${theme.colors.primary};
+    margin: auto 0;
+    height: 100%;
 
     ${theme.media.tablet} {
       position: fixed;
@@ -62,11 +64,6 @@ export const HeaderContent = styled.div<{ showMenu: boolean }>`
       }
     }
   `}
-`;
-
-export const ThemeIcon = styled.li`
-  display: flex;
-  cursor: pointer;
 `;
 
 export const OutOfMenu = styled.div<{ showMenu: boolean }>`

@@ -1,16 +1,18 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { useState } from 'react';
 
-import { Sun } from 'lucide-react';
-
-import { HeaderContainer, HeaderContent, OutOfMenu, ThemeIcon } from './styles';
+import { HeaderContainer, HeaderContent, OutOfMenu } from './styles';
 
 import HeaderLink from 'components/HeaderLink';
 import MenuBurger from 'components/MenuBurger';
+import UserAccount from 'components/UserAccount';
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
+  const { status } = useSession();
 
   const closeMenu = () => {
     setShowMenu(false);
@@ -26,17 +28,26 @@ export default function Header() {
       <HeaderContent showMenu={showMenu} role="menubar">
         <nav>
           <ul>
-            <HeaderLink href="/" name="GetLearning" />
-            <HeaderLink href="/" name="Postar" />
+            <HeaderLink href="/">
+              <Image
+                src="/assets/icon-light.png"
+                alt="Ícone do site"
+                width={25}
+                height={25}
+              />
+              GetLearning
+            </HeaderLink>
+            <HeaderLink href="/makePost">Postar</HeaderLink>
           </ul>
         </nav>
-        <ul>
-          <ThemeIcon>
-            <Sun />
-          </ThemeIcon>
-          <HeaderLink href="/login" name="Entrar" />
-          <HeaderLink href="/register" name="Cadastrar" />
-        </ul>
+        {status === 'authenticated' && <UserAccount />}
+
+        {status === 'unauthenticated' && (
+          <ul>
+            <HeaderLink href="/login">Entrar</HeaderLink>
+            <HeaderLink href="/register">Cadastrar</HeaderLink>
+          </ul>
+        )}
       </HeaderContent>
       <OutOfMenu
         showMenu={showMenu}
