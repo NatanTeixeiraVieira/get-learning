@@ -4,15 +4,19 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div``;
 
-export const InputFullContainer = styled.div<{ hasError: boolean | undefined }>`
-  ${({ theme, hasError }) => css`
+export const InputFullContainer = styled.div<{
+  hasError?: boolean;
+  reverse?: boolean;
+}>`
+  ${({ theme, hasError, reverse }) => css`
     display: flex;
+    flex-direction: ${reverse ? 'row-reverse' : 'row'};
     align-items: center;
     justify-content: space-between;
-    padding: 1px;
+    padding: ${theme.spacings.xsmall};
     margin-top: calc(${theme.spacings.xxxsmall} / 2);
     border: ${theme.border.default};
-    border-radius: ${theme.border.radius};
+    border-radius: ${theme.border.radius.big};
     border-color: ${hasError && theme.colors.error};
     width: 100%;
   `}
@@ -23,7 +27,6 @@ export const InputField = styled.input`
     border: none;
     outline: none;
     flex: auto;
-    padding: ${theme.spacings.xsmall};
     font-size: 1rem;
 
     &::placeholder {
@@ -38,7 +41,7 @@ export const IconContainer = styled.div`
     align-items: center;
     width: 1.2rem;
     cursor: pointer;
-    margin-right: ${theme.spacings.xsmall};
+    margin-left: ${theme.spacings.xsmall};
   `}
 `;
 
