@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
 import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
 import { Post } from 'types/post';
@@ -51,12 +52,10 @@ export default async function Tag({ params, searchParams }: TagProps) {
   if (!searchParams.name) {
     notFound();
   }
-  const tagPosts = await fetcher<Post[]>(
-    `/posts/classification/tags?name=${searchParams.name}&slug=${params.tagSlug}`,
-    {
-      next: { revalidate: 10 },
-    }
-  );
+  const postsEndpoint = `/posts/classification/tags?name=${searchParams.name}&slug=${params.tagSlug}`;
+  const tagPosts = await fetcher<Post[]>(postsEndpoint, {
+    next: { revalidate: 10 },
+  });
 
   if (!tagPosts.datas[0]) {
     notFound();
@@ -67,6 +66,7 @@ export default async function Tag({ params, searchParams }: TagProps) {
   return (
     <Container>
       <InitializerPostsStore posts={tagPosts.datas} />
+      <InitializerEndpointStore endpoint={postsEndpoint} />
       <Heading>
         <Link
           href={{

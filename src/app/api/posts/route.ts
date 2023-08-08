@@ -1,15 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { postsPerRequest } from 'constants/api';
 import { FirebaseError } from 'firebase-admin';
 import admin from 'lib/firebaseAdminConfig';
 import { Post } from 'types/post';
+import getSearchParamsStartAfter from 'utils/getSearchParamsStartAfter';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const startAfter = getSearchParamsStartAfter(request);
   const response = admin
     .firestore()
     .collection('posts')
     .orderBy('createdAt', 'desc')
+    .startAfter(startAfter)
     .limit(postsPerRequest)
     .get()
     .then((snapshot) => {

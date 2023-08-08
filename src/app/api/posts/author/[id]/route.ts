@@ -4,6 +4,7 @@ import { postsPerRequest } from 'constants/api';
 import { FirebaseError } from 'firebase-admin';
 import admin from 'lib/firebaseAdminConfig';
 import { Post } from 'types/post';
+import getSearchParamsStartAfter from 'utils/getSearchParamsStartAfter';
 
 type Context = {
   params: {
@@ -12,11 +13,14 @@ type Context = {
 };
 
 export async function GET(request: NextRequest, { params }: Context) {
+  const startAfter = getSearchParamsStartAfter(request);
+
   const response = admin
     .firestore()
     .collection('posts')
     .where('authorId', '==', params.id)
     .orderBy('createdAt', 'desc')
+    .startAfter(startAfter)
     .limit(postsPerRequest)
     .get()
     .then((snapshot) => {

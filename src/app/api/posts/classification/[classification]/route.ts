@@ -4,6 +4,7 @@ import { postsPerRequest } from 'constants/api';
 import { FirebaseError } from 'firebase-admin';
 import admin from 'lib/firebaseAdminConfig';
 import { Post } from 'types/post';
+import getSearchParamsStartAfter from 'utils/getSearchParamsStartAfter';
 
 type Context = {
   params: {
@@ -13,6 +14,8 @@ type Context = {
 
 export async function GET(request: NextRequest, { params }: Context) {
   const { searchParams } = new URL(request.url);
+  const startAfter = getSearchParamsStartAfter(request);
+
   const opStr = params.classification === 'tags' ? 'array-contains' : '==';
 
   const response = admin
@@ -23,6 +26,7 @@ export async function GET(request: NextRequest, { params }: Context) {
       slug: searchParams.get('slug'),
     })
     .orderBy('createdAt', 'desc')
+    .startAfter(startAfter)
     .limit(postsPerRequest)
     .get()
     .then((snapshot) => {

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { getCurrentUser } from 'lib/session';
 import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
+import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
 import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
 import { Author } from 'types/author';
@@ -44,7 +45,8 @@ type AuthorProps = {
 };
 
 export default async function Author({ params }: AuthorProps) {
-  const authorPosts = await fetcher<Post[]>(`/posts/author/${params.authorId}`);
+  const postsEndpoint = `/posts/author/${params.authorId}`;
+  const authorPosts = await fetcher<Post[]>(postsEndpoint);
 
   if (!authorPosts.datas) {
     notFound();
@@ -91,6 +93,7 @@ export default async function Author({ params }: AuthorProps) {
   return (
     <Wrapper>
       <InitializerPostsStore posts={authorPosts.datas} />
+      <InitializerEndpointStore endpoint={postsEndpoint} />
       <PostOwner
         avatarSrc={author.datas.avatar?.url}
         name={author.datas.name}

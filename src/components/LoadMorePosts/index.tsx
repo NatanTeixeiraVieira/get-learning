@@ -2,36 +2,48 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { postsPerRequest } from 'constants/api';
+import useEndpointStore from 'store/endpointGetPosts';
 import usePostsStore from 'store/posts';
 import { Post } from 'types/post';
-import { loadMorePosts } from 'utils/firestore';
+import fetcher from 'utils/fetcher';
 
 import PostCard from 'components/PostCard';
 import SkeletonPostList from 'components/SkeletonPostsList';
 
-export default function LoadMorePosts() {
-  const [isLoading, setIsLoading] = useState(false);
+type LoadMorePostsProps = {
+  isPostOwner: boolean;
+};
+
+export default function LoadMorePosts({ isPostOwner }: LoadMorePostsProps) {
   const [newPosts, setNewPosts] = useState<Post[]>([]);
   const {
     state: { posts },
   } = usePostsStore();
-  const startAfter = useRef(posts.at(-1)?.createdAt);
+  const {
+    state: { endpoint },
+  } = useEndpointStore();
+  const startAfter = useRef(
+    posts.length === postsPerRequest ? posts.at(-1)?.createdAt : null
+  );
 
   const handleLoadMorePosts = useCallback(async () => {
     const scrollPositionAllowRequest = window.scrollY * 2 + window.innerHeight;
     const documentHeight = document.documentElement.offsetHeight;
-    if (scrollPositionAllowRequest >= documentHeight) {
-      setIsLoading(true);
-      const morePosts = await loadMorePosts(startAfter.current);
-      startAfter.current = morePosts?.at(-1)?.createdAt;
-      if (!morePosts) {
-        setIsLoading(false);
+    if (scrollPositionAllowRequest >= documentHeight && startAfter.current) {
+      const endpointLoadMorePosts = `${endpoint}${
+        endpoint.includes('?') ? '&' : '?'
+      }startAfter=${startAfter.current}`;
+
+      const morePosts = await fetcher<Post[]>(endpointLoadMorePosts);
+      setNewPosts(morePosts.datas);
+      if (morePosts.datas.length < postsPerRequest) {
+        startAfter.current = null;
         return;
       }
-      setNewPosts(morePosts);
-      setIsLoading(false);
+      startAfter.current = morePosts?.datas?.at(-1)?.createdAt;
     }
-  }, []);
+  }, [endpoint]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleLoadMorePosts);
@@ -41,7 +53,7 @@ export default function LoadMorePosts() {
     };
   }, [handleLoadMorePosts]);
 
-  if (isLoading) {
+  if (newPosts.length === 0 && startAfter.current) {
     return <SkeletonPostList.Posts />;
   }
 
@@ -49,11 +61,12 @@ export default function LoadMorePosts() {
     <>
       {newPosts.map((post) => (
         <PostCard
-          key={post.id}
+          key={post.postId}
           title={post.title}
-          subtitle={post.subtitle}
-          imageSrc={post.coverImage.url}
-          id={post.id}
+          subtitle={post.excerpt}
+          coverImage={post.coverImage}
+          id={post.postId}
+          isPostOwner={isPostOwner}
         />
       ))}
     </>

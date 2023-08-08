@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
 import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
 import { Post } from 'types/post';
@@ -55,12 +56,10 @@ export default async function Category({
   if (!searchParams.name) {
     notFound();
   }
-  const categoryPosts = await fetcher<Post[]>(
-    `/posts/classification/category?name=${searchParams.name}&slug=${params.categorySlug}`,
-    {
-      next: { revalidate: 10 },
-    }
-  );
+  const postsEndpoint = `/posts/classification/category?name=${searchParams.name}&slug=${params.categorySlug}`;
+  const categoryPosts = await fetcher<Post[]>(postsEndpoint, {
+    next: { revalidate: 10 },
+  });
   if (!categoryPosts.datas[0]) {
     notFound();
   }
@@ -70,6 +69,7 @@ export default async function Category({
   return (
     <Container>
       <InitializerPostsStore posts={categoryPosts.datas} />
+      <InitializerEndpointStore endpoint={postsEndpoint} />
       <Heading>
         <Link
           href={{
