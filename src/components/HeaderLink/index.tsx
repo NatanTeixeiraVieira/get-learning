@@ -1,16 +1,17 @@
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
 import { LinkContainer } from './styles';
 
 export type HeaderLinkProps = {
-  name: string;
+  children: ReactNode;
   href: string;
 };
 
-export default function HeaderLink({ name, href }: HeaderLinkProps) {
+export default function HeaderLink({ children, href }: HeaderLinkProps) {
   return (
     <LinkContainer>
-      <Link href={href}>{name}</Link>
+      <Link href={href}>{children}</Link>
     </LinkContainer>
   );
 }

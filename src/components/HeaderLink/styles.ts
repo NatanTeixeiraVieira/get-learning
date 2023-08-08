@@ -9,6 +9,8 @@ export const LinkContainer = styled.li`
     a {
       color: ${theme.colors.text.secondary};
       transition: ${theme.transition.fast};
+      display: flex;
+      align-items: center;
 
       &:hover {
         text-decoration: none;
