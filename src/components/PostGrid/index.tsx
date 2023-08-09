@@ -5,21 +5,21 @@ import { Wrapper } from './styles';
 import LoadMorePosts from 'components/LoadMorePosts';
 import PostCard from 'components/PostCard';
 
-export default function PostGrid() {
+export default function PostGrid({ isPostOwner = false }) {
   const { posts } = usePostsStore.getState().state;
-
   return (
     <Wrapper>
       {posts.map((post) => (
         <PostCard
-          key={post.id}
+          key={post.postId}
           title={post.title}
-          subtitle={post.subtitle}
-          imageSrc={post.coverImage.url}
-          id={post.id}
+          subtitle={post.excerpt}
+          coverImage={post.coverImage}
+          id={post.postId}
+          isPostOwner={isPostOwner}
         />
       ))}
-      <LoadMorePosts />
+      <LoadMorePosts isPostOwner={isPostOwner} />
     </Wrapper>
   );
 }
