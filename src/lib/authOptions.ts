@@ -33,9 +33,9 @@ export const authOptions: NextAuthOptions = {
             .catch((error) => {
               switch (error.code) {
                 case 'auth/wrong-password':
-                  throw new Error('Senha incorreta');
+                  throw new Error('Senha incorreta.');
                 case 'auth/user-not-found':
-                  throw new Error('Usuário não encontrado');
+                  throw new Error('Usuário não cadastrado.');
                 case 'auth/too-many-requests':
                   throw new Error(
                     'Muitas tentativas. Por favor, tente novamente mais tarde'
