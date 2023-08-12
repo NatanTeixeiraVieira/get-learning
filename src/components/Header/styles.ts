@@ -7,6 +7,8 @@ const gapLinks = (theme: DefaultTheme) =>
     gap: ${theme.spacings.small};
   `;
 
+const zIndex = 100;
+
 export const HeaderContainer = styled.header`
   ${({ theme }) => css`
     display: flex;
@@ -15,6 +17,10 @@ export const HeaderContainer = styled.header`
     color: ${theme.colors.text.secondary};
     background-color: ${theme.colors.primary};
     height: 4.5rem;
+
+    ${theme.media.mobile} {
+      padding: ${theme.spacings.small} ${theme.spacings.xsmall};
+    }
   `}
 `;
 
@@ -28,23 +34,16 @@ export const LoginAndRegister = styled.ul`
 export const HeaderContent = styled.div<{ showMenu: boolean }>`
   ${({ theme, showMenu }) => css`
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     background-color: ${theme.colors.primary};
-    margin: auto 0;
-    height: 100%;
-
     position: fixed;
     left: ${showMenu ? 0 : -300}px;
     top: 0;
     bottom: 0;
     padding: ${theme.spacings.huge} ${theme.spacings.small} 0;
     width: 300px;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
     ${gapLinks(theme)};
     transition: ${theme.transition.default};
+    z-index: ${zIndex};
 
     @media (max-width: 300px) {
       width: 100%;
@@ -77,5 +76,6 @@ export const OutOfMenu = styled.div<{ showMenu: boolean }>`
     right: 0;
     bottom: 0;
     width: calc(100vw - 300px);
+    z-index: ${zIndex};
   `}
 `;

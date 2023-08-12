@@ -5,10 +5,14 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   ${({ theme }) => css`
     padding: ${theme.spacings.medium};
+
+    ${theme.media.mobile} {
+      padding: ${theme.spacings.xsmall};
+    }
   `}
 `;
 
 export const Content = styled.div`
-  width: 60rem;
+  max-width: 60rem;
   margin: 0 auto;
 `;

@@ -2,6 +2,8 @@
 
 import styled, { css } from 'styled-components';
 
+import { ButtonContainer } from 'components/Button/styles';
+
 export const MakePostFormContainer = styled.form`
   ${({ theme }) => css`
     display: flex;
@@ -26,7 +28,13 @@ export const Excerpt = styled.div`
 `;
 
 export const Classification = styled.div`
-  width: 50%;
+  ${({ theme }) => css`
+    width: 50%;
+
+    ${theme.media.mobile} {
+      width: 100%;
+    }
+  `}
 `;
 
 export const ClassificationFields = styled.div`
@@ -55,6 +63,10 @@ export const Display = styled.div`
     flex-wrap: wrap;
     margin-top: ${theme.spacings.xxxsmall};
     gap: ${theme.spacings.xsmall};
+
+    span {
+      height: 40px;
+    }
 
     svg {
       margin-bottom: 10px;
@@ -126,11 +138,15 @@ export const Buttons = styled.div`
     gap: ${theme.spacings.small};
     margin-top: ${theme.spacings.medium};
 
+    ${theme.media.mobile} {
+      width: 100%;
+    }
+
     a {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: ${theme.colors.error};
+      background-color: ${theme.colors.destructive};
       border-radius: ${theme.border.radius.big};
       color: ${theme.colors.text.secondary};
       width: 10rem;
@@ -139,6 +155,16 @@ export const Buttons = styled.div`
 
       &:hover {
         text-decoration: none;
+      }
+
+      ${theme.media.mobile} {
+        width: 100%;
+      }
+    }
+
+    ${ButtonContainer} {
+      ${theme.media.mobile} {
+        width: 100%;
       }
     }
   `}
