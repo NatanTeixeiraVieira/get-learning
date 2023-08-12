@@ -9,10 +9,19 @@ const gapLinks = (theme: DefaultTheme) =>
 
 export const HeaderContainer = styled.header`
   ${({ theme }) => css`
+    display: flex;
+    justify-content: space-between;
     padding: ${theme.spacings.small} ${theme.spacings.medium};
     color: ${theme.colors.text.secondary};
     background-color: ${theme.colors.primary};
     height: 4.5rem;
+  `}
+`;
+
+export const LoginAndRegister = styled.ul`
+  ${({ theme }) => css`
+    display: flex;
+    ${gapLinks(theme)};
   `}
 `;
 
@@ -25,28 +34,24 @@ export const HeaderContent = styled.div<{ showMenu: boolean }>`
     margin: auto 0;
     height: 100%;
 
-    ${theme.media.tablet} {
-      position: fixed;
-      left: ${showMenu ? 0 : -300}px;
-      top: 0;
-      bottom: 0;
-      padding: ${theme.spacings.huge} ${theme.spacings.small} 0;
-      width: 300px;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      ${gapLinks(theme)};
-      transition: ${theme.transition.default};
-    }
+    position: fixed;
+    left: ${showMenu ? 0 : -300}px;
+    top: 0;
+    bottom: 0;
+    padding: ${theme.spacings.huge} ${theme.spacings.small} 0;
+    width: 300px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    ${gapLinks(theme)};
+    transition: ${theme.transition.default};
 
     @media (max-width: 300px) {
       width: 100%;
     }
 
     nav {
-      ${theme.media.tablet} {
-        margin-top: ${theme.spacings.medium};
-      }
+      margin-top: ${theme.spacings.medium};
     }
 
     ul {
@@ -54,13 +59,11 @@ export const HeaderContent = styled.div<{ showMenu: boolean }>`
       align-items: center;
       ${gapLinks(theme)};
 
-      ${theme.media.tablet} {
-        flex-direction: column;
-        align-items: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
 
-        &:nth-child(2) {
-          flex-direction: column-reverse;
-        }
+      &:nth-child(2) {
+        flex-direction: column-reverse;
       }
     }
   `}
