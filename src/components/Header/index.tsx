@@ -2,9 +2,16 @@
 
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { HeaderContainer, HeaderContent, OutOfMenu } from './styles';
+import { useRouteChange } from 'hooks/useRouteChange';
+
+import {
+  HeaderContainer,
+  HeaderContent,
+  LoginAndRegister,
+  OutOfMenu,
+} from './styles';
 
 import HeaderLink from 'components/HeaderLink';
 import MenuBurger from 'components/MenuBurger';
@@ -14,17 +21,28 @@ export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const { status } = useSession();
 
-  const closeMenu = () => {
+  const handleCloseMenu = useCallback(() => {
     setShowMenu(false);
-  };
+  }, []);
 
   const handleShowMenu = () => {
     setShowMenu((prev) => !prev);
   };
 
+  useRouteChange(handleCloseMenu);
+
   return (
     <HeaderContainer>
       <MenuBurger onClick={handleShowMenu} showMenu={showMenu} />
+      {status === 'authenticated' && <UserAccount />}
+      {status === 'unauthenticated' && (
+        <nav>
+          <LoginAndRegister>
+            <HeaderLink href="/login">Entrar</HeaderLink>
+            <HeaderLink href="/register">Cadastrar</HeaderLink>
+          </LoginAndRegister>
+        </nav>
+      )}
       <HeaderContent showMenu={showMenu} role="menubar">
         <nav>
           <ul>
@@ -40,18 +58,10 @@ export default function Header() {
             <HeaderLink href="/makePost">Postar</HeaderLink>
           </ul>
         </nav>
-        {status === 'authenticated' && <UserAccount />}
-
-        {status === 'unauthenticated' && (
-          <ul>
-            <HeaderLink href="/login">Entrar</HeaderLink>
-            <HeaderLink href="/register">Cadastrar</HeaderLink>
-          </ul>
-        )}
       </HeaderContent>
       <OutOfMenu
         showMenu={showMenu}
-        onClick={closeMenu}
+        onClick={handleCloseMenu}
         data-testid="outOfMenu"
       />
     </HeaderContainer>
