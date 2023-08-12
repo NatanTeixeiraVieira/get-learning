@@ -16,7 +16,7 @@ const fadeIn = keyframes`
 `;
 
 export const Root = styled.div<Pick<DialogBoxRootProps, 'open'>>`
-  ${({ open }) => css`
+  ${({ theme, open }) => css`
     justify-content: center;
     align-items: center;
     position: fixed;
@@ -25,6 +25,7 @@ export const Root = styled.div<Pick<DialogBoxRootProps, 'open'>>`
     left: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
+    padding: ${theme.spacings.xsmall};
     z-index: 999;
     display: ${open ? 'flex' : 'none'};
     animation: ${fadeIn} 0.2s ease;
@@ -40,6 +41,10 @@ export const RootContent = styled.div`
     background-color: ${theme.colors.background};
     padding: ${theme.spacings.small};
     border-radius: ${theme.border.radius.big};
+
+    ${theme.media.mobile} {
+      width: 100%;
+    }
   `}
 `;
 
