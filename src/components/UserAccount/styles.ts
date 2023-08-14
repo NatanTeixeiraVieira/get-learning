@@ -2,11 +2,16 @@
 
 import styled, { css } from 'styled-components';
 
+const accountIconHeight = '2.5rem';
+
 export const Container = styled.div``;
 
 export const AccountIcon = styled.div`
   ${({ theme }) => css`
-    position: relative;
+    position: absolute;
+    top: calc((4.5rem - ${accountIconHeight}) / 2);
+    right: ${theme.spacings.medium};
+    height: ${accountIconHeight};
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -19,9 +24,10 @@ export const AccountIcon = styled.div`
   `}
 `;
 
-export const AccountMenu = styled.div`
-  ${({ theme }) => css`
+export const AccountMenu = styled.div<{ showAccountMenu: boolean }>`
+  ${({ theme, showAccountMenu = false }) => css`
     position: absolute;
+    display: ${showAccountMenu ? 'block' : 'none'};
     right: ${theme.spacings.medium};
     top: 4rem;
     border-radius: ${theme.border.radius.big};
@@ -30,6 +36,23 @@ export const AccountMenu = styled.div`
     box-shadow: rgba(31, 35, 40, 0.15) 0px 1px 3px,
       rgba(66, 74, 83, 0.15) 0px 8px 24px;
     z-index: 10;
+
+    ${theme.media.mobile} {
+      position: fixed;
+      display: block;
+      border-radius: 0;
+      top: 0;
+      right: -300px;
+      right: ${showAccountMenu && 0};
+      bottom: 0;
+      width: 300px;
+      z-index: 999;
+      transition: ${theme.transition.default};
+    }
+
+    @media (max-width: 300px) {
+      width: 100%;
+    }
 
     ul {
       display: flex;
@@ -46,6 +69,14 @@ export const AccountMenu = styled.div`
         text-decoration: none;
       }
     }
+  `}
+`;
+
+export const XIcon = styled.div`
+  ${({ theme }) => css`
+    color: ${theme.colors.text.primary};
+    width: fit-content;
+    margin: ${theme.spacings.xxxsmall} 0;
   `}
 `;
 
@@ -77,6 +108,12 @@ export const ToggleThemeArea = styled.div`
     display: flex;
     justify-content: center;
     gap: ${theme.spacings.xsmall};
+
+    ${theme.media.mobile} {
+      justify-content: flex-start;
+      padding-left: 0;
+      padding-right: 0;
+    }
 
     svg {
       color: ${theme.colors.text.primary};
