@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -13,6 +13,8 @@ import JoditEditor, { Jodit } from 'jodit-react';
 import { ImagePlus, Plus, X } from 'lucide-react';
 import { addPost } from 'services/addPost';
 import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
+import { updatePost } from 'services/updatePost';
+import usePostStore from 'store/post';
 import { MakePostData } from 'types/addPostDatas';
 import categoriesList from 'utils/categoriesList';
 import translateText from 'utils/translateText';
@@ -42,22 +44,42 @@ export default function MakePostForm() {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, dirtyFields, isSubmitting },
   } = useForm<MakePostData>({
     resolver: zodResolver(makePostFormSchema),
   });
+  const { post } = usePostStore().state;
+
   const [editorError, setEditorError] = useState<string | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(
+    () => post?.tags.map((tag) => tag.name) ?? []
+  );
+
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const inputTagsRef = useRef<HTMLInputElement>(null);
   const editorRef = useRef<Jodit>(null);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const session = useSession();
 
+  const isEdit = !!post && pathname === '/edit';
+
   const watchCoverImage = watch('coverImage');
+
+  useEffect(() => {
+    setValue('title', isEdit ? post?.title : '');
+    setValue('excerpt', isEdit ? post?.excerpt : '');
+    setValue(
+      'category',
+      isEdit ? post?.category.name : 'Selecione a categoria'
+    );
+    setValue('allowComents', isEdit ? post?.allowComents : true);
+    setPreviewImage(isEdit ? post?.coverImage.url : null);
+  }, [isEdit, post, setValue]);
 
   useEffect(() => {
     const handleCoverImageSelected = () => {
@@ -109,12 +131,16 @@ export default function MakePostForm() {
       setEditorError(null);
       const editorContent = textEditorSchema.parse(editorRef.current?.value);
 
-      const response = await addPost({
+      const datasToSend = {
         ...data,
         tags,
         content: editorContent,
         authorId: authorLoggedInfos.datas.authorId,
-      });
+      };
+
+      const response = await (isEdit
+        ? updatePost(post.postId, post.coverImage.name, datasToSend)
+        : addPost(datasToSend));
       const translatedResponse = (
         await translateText(response.datas.message)
       ).toLowerCase();
@@ -145,7 +171,11 @@ export default function MakePostForm() {
       </Input.Root>
 
       <div>
-        <JoditEditor config={joditEditorConfig} value="" ref={editorRef} />
+        <JoditEditor
+          config={joditEditorConfig}
+          value={isEdit ? post.content : ''}
+          ref={editorRef}
+        />
         {editorError && <Input.HelperText>{editorError}</Input.HelperText>}
       </div>
 
@@ -161,7 +191,9 @@ export default function MakePostForm() {
         <ClassificationFields>
           <label htmlFor="category">Categoria</label>
           <Select id="category" {...register('category')}>
-            <option value="Selecione a categoria">Selecione a categoria</option>
+            <option value="Selecione a categoria">
+              {isEdit ? post.category.name : 'Selecione a categoria'}
+            </option>
             {categoriesList.map((category) => (
               <option value={category} key={`makePostForm-${category}`}>
                 {category}
@@ -226,10 +258,10 @@ export default function MakePostForm() {
       </CoverImage>
 
       <Buttons>
-        <Link href="/">Cancelar</Link>
-        <Button.Root type="submit" width="10rem">
+        <Link href={!isSubmitting ? '/' : ''}>Cancelar</Link>
+        <Button.Root type="submit" width="10rem" disabled={isSubmitting}>
           {isSubmitting && <Button.IconSpin />}
-          {!isSubmitting && 'Publicar'}
+          {!isSubmitting && (isEdit ? 'Salvar' : 'Publicar')}
         </Button.Root>
       </Buttons>
     </MakePostFormContainer>

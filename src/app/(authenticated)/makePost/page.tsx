@@ -1,21 +1,11 @@
 import { Metadata } from 'next';
 
-import { Container, Content } from './styles';
-
-import Heading from 'components/Heading';
-import MakePostForm from 'components/MakePostForm';
+import CreateAndUpdatePost from 'components/CreateAndUpdatePost';
 
 export const metadata: Metadata = {
   title: 'Publicar novo post',
 };
 
 export default function MakePost() {
-  return (
-    <Container>
-      <Content>
-        <Heading>Publicar novo post</Heading>
-        <MakePostForm />
-      </Content>
-    </Container>
-  );
+  return <CreateAndUpdatePost title="Publicar novo post" />;
 }
