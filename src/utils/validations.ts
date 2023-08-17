@@ -26,6 +26,17 @@ export const password = z
 
 export const acceptedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
+export const registerFormSchema = z.object({
+  userName,
+  email,
+  password,
+});
+
+export const loginFormSchema = z.object({
+  email,
+  password,
+});
+
 export const makePostFormSchema = z.object({
   title: z
     .string()
@@ -62,3 +73,17 @@ export const textEditorSchema = z.string().refine(
     }).split(/\s+/).length >= 3,
   'Pouco conteúdo. Por favor, escreva mais.'
 );
+
+export const validatePostToSendSchema = z.object({
+  title: makePostFormSchema.shape.title,
+  excerpt: makePostFormSchema.shape.excerpt,
+  category: makePostFormSchema.shape.category,
+  allowComents: makePostFormSchema.shape.allowComents,
+  content: z.string(),
+  tags: z.array(z.any()),
+  authorId: z.string(),
+  coverImage: z.object({
+    name: z.string(),
+    url: z.string(),
+  }),
+});

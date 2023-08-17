@@ -3,29 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import admin from 'lib/firebaseAdminConfig';
 import { getCurrentUser } from 'lib/session';
 import slugGenerator from 'utils/slugGenerator';
-import { makePostFormSchema } from 'utils/validations';
+import { validatePostToSendSchema } from 'utils/validations';
 import { z } from 'zod';
-
-const validatePostToSendSchema = z.object({
-  title: makePostFormSchema.shape.title,
-  excerpt: makePostFormSchema.shape.excerpt,
-  category: makePostFormSchema.shape.category,
-  allowComents: makePostFormSchema.shape.allowComents,
-  content: z.string(),
-  tags: z.array(z.any()),
-  authorId: z.string(),
-  coverImage: z.object({
-    name: z.string(),
-    url: z.string(),
-  }),
-});
 
 type DataReceived = z.infer<typeof validatePostToSendSchema>;
 
 export async function POST(request: NextRequest) {
   const session = await getCurrentUser();
   if (!session) {
-    return NextResponse.json('User not allowed');
+    return NextResponse.json({ message: 'User not allowed' }, { status: 401 });
   }
 
   const datas: DataReceived = await request.json();
