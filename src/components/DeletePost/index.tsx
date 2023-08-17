@@ -54,8 +54,8 @@ export default function DeletePost({
           </DialogBox.Button>
         </DialogBox.Actions>
       </DialogBox.Root>
-      <Container onClick={() => setShowDialogBox(true)}>
-        <Trash2 size="1.2rem" />
+      <Container>
+        <Trash2 size="1rem" onClick={() => setShowDialogBox(true)} />
       </Container>
     </>
   );

@@ -6,23 +6,9 @@ import { HeadingContainer } from 'components/Heading/styles';
 
 export const Container = styled.div`
   ${({ theme }) => css`
-    a {
-      color: ${theme.colors.text.primary};
-      transition: ${theme.transition.default};
-
-      img {
-        border-radius: 12px;
-        width: 100%;
-        height: 11.25rem;
-      }
-
-      &:hover {
-        opacity: 0.9;
-      }
-    }
-
     ${HeadingContainer} {
       a {
+        color: ${theme.colors.text.primary};
         text-decoration: none;
       }
       margin: ${theme.spacings.xxxsmall} 0 ${theme.spacings.xxsmall} 0;
@@ -30,6 +16,59 @@ export const Container = styled.div`
 
       &:hover {
         opacity: 0.8;
+      }
+    }
+  `}
+`;
+
+export const Options = styled.div`
+  ${({ theme }) => css`
+    width: fit-content;
+    display: flex;
+    gap: calc(${theme.spacings.xxxsmall} / 2);
+    position: relative;
+    left: 15.25rem;
+    top: 2.2rem;
+
+    a {
+      z-index: 5;
+    }
+  `}
+`;
+
+export const Option = styled.div`
+  ${({ theme }) => css`
+    width: fit-content;
+    display: flex;
+    cursor: pointer;
+    background-color: ${theme.colors.primary};
+    color: ${theme.colors.text.secondary};
+    padding: calc(${theme.spacings.xxsmall} / 2) ${theme.spacings.xxxsmall};
+    border-radius: ${theme.border.radius.default};
+    z-index: 10;
+  `}
+`;
+
+export const UpdatePost = styled(Option)`
+  ${({ theme }) => css`
+    a {
+      color: ${theme.colors.text.secondary};
+    }
+  `}
+`;
+
+export const PostImage = styled.div`
+  ${({ theme }) => css`
+    a {
+      color: ${theme.colors.text.primary};
+      transition: ${theme.transition.default};
+    }
+    img {
+      border-radius: 12px;
+      width: 100%;
+      height: 11.25rem;
+      &:hover {
+        opacity: 0.9;
       }
     }
   `}

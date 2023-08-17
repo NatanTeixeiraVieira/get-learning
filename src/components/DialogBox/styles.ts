@@ -41,6 +41,7 @@ export const RootContent = styled.div`
     background-color: ${theme.colors.background};
     padding: ${theme.spacings.small};
     border-radius: ${theme.border.radius.big};
+    z-index: 999;
 
     ${theme.media.mobile} {
       width: 100%;
