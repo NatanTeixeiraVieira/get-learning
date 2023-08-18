@@ -14,6 +14,12 @@ import PostContent from 'components/PostContent';
 import PostHeader from 'components/PostHeader';
 import PostOwner from 'components/PostOwner';
 
+type PostProps = {
+  params: {
+    id: string;
+  };
+};
+
 export const generateMetadata = async ({
   params,
 }: PostProps): Promise<Metadata> => {
@@ -21,7 +27,7 @@ export const generateMetadata = async ({
     const post = await fetcher<Post>(`/post/${params.id}`, {
       next: { revalidate: 10 },
     });
-    const author = await fetcher<Author>(`/author/${post.datas.authorId}`, {
+    const author = await fetcher<Author>(`/author/id/${post.datas.authorId}`, {
       next: { revalidate: 10 },
     });
     return {
@@ -33,12 +39,6 @@ export const generateMetadata = async ({
       title: 'Página não encontrada',
     };
   }
-};
-
-type PostProps = {
-  params: {
-    id: string;
-  };
 };
 
 export default async function Post({ params }: PostProps) {

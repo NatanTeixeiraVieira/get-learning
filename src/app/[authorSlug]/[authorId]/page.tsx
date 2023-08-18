@@ -23,7 +23,7 @@ export const generateMetadata = async ({
   params,
 }: AuthorProps): Promise<Metadata> => {
   try {
-    const author = await fetcher<Author>(`/author/${params.authorId}`, {
+    const author = await fetcher<Author>(`/author/id/${params.authorId}`, {
       next: { revalidate: 10 },
     });
     return {
