@@ -48,7 +48,7 @@ export const Navigation = styled.div`
       justify-content: center;
       padding: ${theme.spacings.xsmall};
       background-color: ${theme.colors.primary};
-      border-radius: ${theme.border.radius};
+      border-radius: ${theme.border.radius.big};
       width: 50%;
       height: 3rem;
       text-align: center;
