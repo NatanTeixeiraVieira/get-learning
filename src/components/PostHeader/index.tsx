@@ -12,7 +12,7 @@ export type PostHeaderProps = {
   subtitle: string;
   imageSrc: string;
   createdAt: number;
-  categories: Category[];
+  category: Category;
 };
 
 export default function PostHeader({
@@ -20,7 +20,7 @@ export default function PostHeader({
   subtitle,
   imageSrc,
   createdAt,
-  categories,
+  category,
 }: PostHeaderProps) {
   return (
     <Wrapper>
@@ -32,7 +32,7 @@ export default function PostHeader({
         width={1500}
         height={750}
       />
-      <PostInfo createdAt={createdAt} categories={categories} />
+      <PostInfo createdAt={createdAt} category={category} />
       <hr />
     </Wrapper>
   );
