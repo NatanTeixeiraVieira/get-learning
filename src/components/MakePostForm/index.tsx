@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -40,46 +40,43 @@ import { Button } from 'components/Button';
 import { Input } from 'components/Input';
 
 export default function MakePostForm() {
+  const { post } = usePostStore().state;
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isEdit = !!post && pathname === '/edit';
+
   const {
     register,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors, dirtyFields, isSubmitting },
   } = useForm<MakePostData>({
     resolver: zodResolver(makePostFormSchema),
+    defaultValues: {
+      title: isEdit ? post?.title : '',
+      excerpt: isEdit ? post?.excerpt : '',
+      category: isEdit ? post?.category.name : 'Selecione a categoria',
+      allowComents: isEdit ? post?.allowComents : true,
+    },
   });
-  const { post } = usePostStore().state;
 
   const [editorError, setEditorError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>(
     () => post?.tags.map((tag) => tag.name) ?? []
   );
 
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(() =>
+    isEdit ? post?.coverImage.url : null
+  );
 
   const inputTagsRef = useRef<HTMLInputElement>(null);
   const editorRef = useRef<Jodit>(null);
 
-  const router = useRouter();
-  const pathname = usePathname();
-
   const session = useSession();
 
-  const isEdit = !!post && pathname === '/edit';
-
   const watchCoverImage = watch('coverImage');
-
-  useEffect(() => {
-    setValue('title', isEdit ? post?.title : '');
-    setValue('excerpt', isEdit ? post?.excerpt : '');
-    setValue(
-      'category',
-      isEdit ? post?.category.name : 'Selecione a categoria'
-    );
-    setValue('allowComents', isEdit ? post?.allowComents : true);
-    setPreviewImage(isEdit ? post?.coverImage.url : null);
-  }, [isEdit, post, setValue]);
 
   useEffect(() => {
     const handleCoverImageSelected = () => {
@@ -116,7 +113,7 @@ export default function MakePostForm() {
     setTags((prev) => prev.filter((item) => item !== id));
   };
 
-  const onSubmit = async (data: MakePostData) => {
+  const onSubmit: SubmitHandler<MakePostData> = async (data: MakePostData) => {
     try {
       const authorLoggedInfos = await getAuthorLoggedInfos(
         session.data?.user?.email
