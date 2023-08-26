@@ -9,8 +9,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useToggleTheme } from 'hooks/useToggleTheme';
-import JoditEditor, { Jodit } from 'jodit-react';
+import { Jodit } from 'jodit-react';
 import { ImagePlus, Plus, X } from 'lucide-react';
 import { addPost } from 'services/addPost';
 import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
@@ -35,11 +34,11 @@ import {
   TagText,
   MakePostFormContainer,
   PreviewImage,
-  TextEditor,
 } from './styles';
 
 import { Button } from 'components/Button';
 import { Input } from 'components/Input';
+import TextEditor from 'components/TextEditor';
 
 export default function MakePostForm() {
   const { post } = usePostStore().state;
@@ -78,8 +77,6 @@ export default function MakePostForm() {
 
   const session = useSession();
 
-  const currentTheme = useToggleTheme();
-
   const watchCoverImage = watch('coverImage');
 
   useEffect(() => {
@@ -96,12 +93,6 @@ export default function MakePostForm() {
       handleCoverImageSelected();
     }
   }, [errors.coverImage, watchCoverImage, dirtyFields.coverImage]);
-
-  const joditEditorConfig = {
-    readonly: false,
-    height: 500,
-    theme: currentTheme.title,
-  };
 
   const handleAddTag = () => {
     if (
@@ -172,14 +163,7 @@ export default function MakePostForm() {
         )}
       </Input.Root>
 
-      <TextEditor>
-        <JoditEditor
-          config={joditEditorConfig}
-          value={isEdit ? post.content : ''}
-          ref={editorRef}
-        />
-        {editorError && <Input.HelperText>{editorError}</Input.HelperText>}
-      </TextEditor>
+      <TextEditor editorError={editorError} isEdit={isEdit} ref={editorRef} />
 
       <Excerpt>
         <Input.Label htmlFor="excerpt">Subtítulo</Input.Label>

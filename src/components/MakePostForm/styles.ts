@@ -13,19 +13,6 @@ export const MakePostFormContainer = styled.form`
   `}
 `;
 
-export const TextEditor = styled.div`
-  ${({ theme }) => css`
-    .jodit-toolbar__box,
-    .jodit-status-bar {
-      background-color: ${theme.title === 'dark' &&
-      theme.colors.primary} !important;
-    }
-    .jodit-wysiwyg {
-      background-color: ${theme.colors.background} !important;
-    }
-  `}
-`;
-
 export const Excerpt = styled.div`
   ${({ theme }) => css`
     display: flex;
