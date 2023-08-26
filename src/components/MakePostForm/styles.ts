@@ -13,6 +13,19 @@ export const MakePostFormContainer = styled.form`
   `}
 `;
 
+export const TextEditor = styled.div`
+  ${({ theme }) => css`
+    .jodit-toolbar__box,
+    .jodit-status-bar {
+      background-color: ${theme.title === 'dark' &&
+      theme.colors.primary} !important;
+    }
+    .jodit-wysiwyg {
+      background-color: ${theme.colors.background} !important;
+    }
+  `}
+`;
+
 export const Excerpt = styled.div`
   ${({ theme }) => css`
     display: flex;
@@ -121,7 +134,9 @@ export const PreviewImage = styled.label`
     width: 20rem;
     height: 11.25rem;
     margin-top: ${theme.spacings.xxxsmall};
-    background-color: ${theme.colors.mediumGray};
+    background-color: ${theme.title === 'dark'
+      ? theme.colors.darkGray
+      : theme.colors.mediumGray};
     border-radius: 12px;
     cursor: pointer;
 
@@ -148,7 +163,7 @@ export const Buttons = styled.div`
       justify-content: center;
       background-color: ${theme.colors.destructive};
       border-radius: ${theme.border.radius.big};
-      color: ${theme.colors.text.secondary};
+      color: ${theme.colors.light};
       width: 10rem;
       height: 3rem;
       padding: ${theme.spacings.xxxsmall};

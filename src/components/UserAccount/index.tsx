@@ -1,7 +1,6 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -9,6 +8,7 @@ import { useRouteChange } from 'hooks/useRouteChange';
 import { Laptop, Moon, Sun, UserCircle2, X } from 'lucide-react';
 import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
 import logOut from 'services/logOut';
+import useThemeStore from 'store/theme';
 import { Author } from 'types/author';
 
 import {
@@ -22,6 +22,8 @@ import {
   Container,
   XIcon,
 } from './styles';
+
+import AvatarProfile from 'components/AvatarProfile';
 
 export default function UserAccount() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -41,6 +43,8 @@ export default function UserAccount() {
 
   useRouteChange(handleCloseMenu);
 
+  const { toggleTheme } = useThemeStore().actions;
+
   useEffect(() => {
     const userLoggedInfos = async () => {
       const authorLogged = await getAuthorLoggedInfos(data?.user?.email);
@@ -59,7 +63,7 @@ export default function UserAccount() {
           setShowAccountMenu((prev) => !prev);
         }}
       >
-        <UserCircle2 size="2.5rem" strokeWidth={2} />
+        <UserCircle2 size="2.5rem" strokeWidth={2} color="white" />
       </AccountIcon>
 
       <>
@@ -75,14 +79,12 @@ export default function UserAccount() {
                 <Link
                   href={`${authorLoggedInfos?.slug}/${authorLoggedInfos?.authorId}`}
                 >
-                  <Image
-                    src={
-                      authorLoggedInfos?.avatar?.url ?? '/assets/profile.png'
-                    }
+                  <AvatarProfile
+                    src={authorLoggedInfos?.avatar?.url}
                     alt="Avatar do proprietário do usuário logado"
                     width={24}
                     height={24}
-                  ></Image>
+                  />
                   {authorLoggedInfos?.name}
                 </Link>
               </NavigationItems>
@@ -93,13 +95,13 @@ export default function UserAccount() {
                 <Link href="/">Configurações da conta</Link>
               </NavigationItems>
               <ToggleThemeArea>
-                <ThemeIcon>
+                <ThemeIcon onClick={() => toggleTheme('dark')}>
                   <Moon />
                 </ThemeIcon>
-                <ThemeIcon>
+                <ThemeIcon onClick={() => toggleTheme('system')}>
                   <Laptop />
                 </ThemeIcon>
-                <ThemeIcon>
+                <ThemeIcon onClick={() => toggleTheme('light')}>
                   <Sun />
                 </ThemeIcon>
               </ToggleThemeArea>

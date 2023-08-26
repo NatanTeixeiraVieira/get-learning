@@ -9,6 +9,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useToggleTheme } from 'hooks/useToggleTheme';
 import JoditEditor, { Jodit } from 'jodit-react';
 import { ImagePlus, Plus, X } from 'lucide-react';
 import { addPost } from 'services/addPost';
@@ -34,6 +35,7 @@ import {
   TagText,
   MakePostFormContainer,
   PreviewImage,
+  TextEditor,
 } from './styles';
 
 import { Button } from 'components/Button';
@@ -76,6 +78,8 @@ export default function MakePostForm() {
 
   const session = useSession();
 
+  const currentTheme = useToggleTheme();
+
   const watchCoverImage = watch('coverImage');
 
   useEffect(() => {
@@ -96,6 +100,7 @@ export default function MakePostForm() {
   const joditEditorConfig = {
     readonly: false,
     height: 500,
+    theme: currentTheme.title,
   };
 
   const handleAddTag = () => {
@@ -167,14 +172,14 @@ export default function MakePostForm() {
         )}
       </Input.Root>
 
-      <div>
+      <TextEditor>
         <JoditEditor
           config={joditEditorConfig}
           value={isEdit ? post.content : ''}
           ref={editorRef}
         />
         {editorError && <Input.HelperText>{editorError}</Input.HelperText>}
-      </div>
+      </TextEditor>
 
       <Excerpt>
         <Input.Label htmlFor="excerpt">Subtítulo</Input.Label>

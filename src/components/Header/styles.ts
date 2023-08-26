@@ -14,7 +14,6 @@ export const HeaderContainer = styled.header`
     display: flex;
     justify-content: space-between;
     padding: ${theme.spacings.small} ${theme.spacings.medium};
-    color: ${theme.colors.text.secondary};
     background-color: ${theme.colors.primary};
     height: 4.5rem;
 
@@ -49,6 +48,10 @@ export const HeaderContent = styled.div<{ showMenu: boolean }>`
       width: 100%;
     }
 
+    * {
+      background-color: ${theme.colors.primary};
+    }
+
     nav {
       margin-top: ${theme.spacings.medium};
     }
@@ -77,5 +80,6 @@ export const OutOfMenu = styled.div<{ showMenu: boolean }>`
     bottom: 0;
     width: calc(100vw - 300px);
     z-index: ${zIndex};
+    background: transparent;
   `}
 `;

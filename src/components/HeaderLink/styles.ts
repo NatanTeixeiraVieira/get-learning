@@ -7,7 +7,7 @@ export const LinkContainer = styled.li`
     list-style: none;
 
     a {
-      color: ${theme.colors.text.secondary};
+      color: ${theme.colors.light};
       transition: ${theme.transition.fast};
       display: flex;
       align-items: center;

@@ -7,6 +7,15 @@ export const Wrapper = styled.section`
     margin-top: ${theme.spacings.huge};
     overflow-x: auto;
 
+    * {
+      background-color: ${theme.colors.background} !important;
+      color: ${theme.colors.text.primary} !important;
+    }
+
+    p {
+      font-family: 'Open Sans', sans-serif;
+    }
+
     pre {
       background-color: ${theme.colors.primary};
       color: ${theme.colors.text.secondary};

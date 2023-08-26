@@ -38,7 +38,9 @@ export const RootContent = styled.div`
     flex-direction: column;
     gap: ${theme.spacings.xsmall};
     width: 50%;
-    background-color: ${theme.colors.background};
+    background-color: ${theme.title === 'dark'
+      ? theme.colors.darkGray
+      : theme.colors.background};
     padding: ${theme.spacings.small};
     border-radius: ${theme.border.radius.big};
     z-index: 999;

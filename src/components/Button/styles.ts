@@ -14,7 +14,8 @@ const animationSpin = keyframes`
 `;
 
 const backgroundColors = {
-  default: (theme: DefaultTheme) => theme.colors.primary,
+  default: (theme: DefaultTheme) =>
+    theme.title === 'light' ? theme.colors.primary : theme.colors.darkGray,
   secondary: (theme: DefaultTheme) => theme.colors.darkGray,
   destructive: (theme: DefaultTheme) => theme.colors.destructive,
 };
@@ -27,7 +28,7 @@ export const ButtonContainer = styled.button<ButtonProps>`
     padding: ${theme.spacings.xxxsmall};
     background-color: ${backgroundColors[variant](theme)};
     opacity: ${disabled ? '0.8' : '1'};
-    color: ${theme.colors.text.secondary};
+    color: ${theme.colors.light};
     font-size: 1rem;
     width: ${width};
     height: 3rem;

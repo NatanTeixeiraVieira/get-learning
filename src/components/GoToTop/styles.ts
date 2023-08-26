@@ -10,11 +10,10 @@ export const ContainerLink = styled.a`
     position: fixed;
     right: ${theme.spacings.medium};
     bottom: ${theme.spacings.medium};
-    color: ${theme.colors.text.secondary};
     width: 3rem;
     height: 3rem;
     border-radius: 100px;
-    background-color: ${theme.colors.primary};
+    background-color: ${theme.colors.text.primary};
     opacity: 0.9;
     transition: all ease 0.3s;
     z-index: 1000;
@@ -22,7 +21,9 @@ export const ContainerLink = styled.a`
     &:hover {
       opacity: 1;
     }
-
+    * {
+      color: ${theme.colors.text.secondary};
+    }
     svg {
       width: ${theme.font.sizes.small};
     }

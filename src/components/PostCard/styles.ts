@@ -28,7 +28,7 @@ export const Options = styled.div`
     gap: calc(${theme.spacings.xxxsmall} / 2);
     position: relative;
     left: 15.25rem;
-    top: 2.2rem;
+    top: 2.5rem;
 
     a {
       z-index: 5;
@@ -38,24 +38,19 @@ export const Options = styled.div`
 
 export const Option = styled.div`
   ${({ theme }) => css`
-    width: fit-content;
-    display: flex;
     cursor: pointer;
     background-color: ${theme.colors.primary};
-    color: ${theme.colors.text.secondary};
     padding: calc(${theme.spacings.xxsmall} / 2) ${theme.spacings.xxxsmall};
     border-radius: ${theme.border.radius.default};
     z-index: 10;
-  `}
-`;
 
-export const UpdatePost = styled(Option)`
-  ${({ theme }) => css`
-    a {
-      color: ${theme.colors.text.secondary};
+    svg * {
+      color: ${theme.colors.light};
     }
   `}
 `;
+
+export const UpdatePost = styled(Option)``;
 
 export const PostImage = styled.div`
   ${({ theme }) => css`
@@ -78,5 +73,6 @@ export const Subtitle = styled.p`
   ${({ theme }) => css`
     font-size: ${theme.font.sizes.xxsmall};
     line-height: 1.3rem;
+    color: ${theme.colors.text.primary};
   `}
 `;

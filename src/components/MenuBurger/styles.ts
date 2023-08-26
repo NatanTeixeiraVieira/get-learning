@@ -31,7 +31,7 @@ export const Container = styled.div<Pick<MenuBurgerProps, 'showMenu'>>`
       width: 100%;
       height: 4px;
       margin-bottom: 4px;
-      background-color: ${theme.colors.text.secondary};
+      background-color: ${theme.colors.light};
       border-radius: 3px;
       transition: ${theme.transition.default};
 

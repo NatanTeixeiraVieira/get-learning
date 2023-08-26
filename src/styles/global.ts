@@ -23,7 +23,18 @@ const GlobalStyles = createGlobalStyle`
     }
 
     body {
-      font-size: ${theme.font.sizes.xsmall};
+      background-color: ${theme.colors.background};
+
+      * {
+        color: ${theme.colors.text.primary};
+        line-height: 1.5rem;
+      }
+    }
+
+    input,
+    textarea,
+    select {
+      background-color: ${theme.colors.background};
     }
 
     h1,
@@ -34,10 +45,6 @@ const GlobalStyles = createGlobalStyle`
     h6 {
       font-weight: ${theme.font.weights.xbold};
       color: ${theme.colors.text.primary};
-    }
-
-    p {
-      line-height: ${theme.spacings.small};
     }
 
     a {

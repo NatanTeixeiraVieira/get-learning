@@ -1,8 +1,14 @@
+'use client';
+
 import Image from 'next/image';
 
-import PlanetAnimation from './planetAnimation.gif';
+import { useToggleTheme } from 'hooks/useToggleTheme';
+
+import planetAnimationDark from './planetAnimation-dark.gif';
+import planetAnimationLight from './planetAnimation-light.gif';
 
 export default function Animation404() {
+  const theme = useToggleTheme();
   return (
     <>
       <svg
@@ -18,7 +24,14 @@ export default function Animation404() {
         />
       </svg>
 
-      <Image src={PlanetAnimation} width={150} height={150} alt="" />
+      <Image
+        src={
+          theme.title === 'dark' ? planetAnimationDark : planetAnimationLight
+        }
+        width={150}
+        height={150}
+        alt=""
+      />
 
       <svg
         width="61"

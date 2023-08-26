@@ -15,9 +15,9 @@ const Background = styled.div`
   ${({ theme }) => css`
     background: linear-gradient(
       -90deg,
-      ${theme.skeleton.color.default} 0%,
-      ${theme.skeleton.color.animation} 50%,
-      ${theme.skeleton.color.default} 100%
+      ${theme.colors.skeleton.default} 0%,
+      ${theme.colors.skeleton.animation} 50%,
+      ${theme.colors.skeleton.default} 100%
     );
     background-size: 400% 400%;
     animation: ${animation} ${theme.skeleton.animation};

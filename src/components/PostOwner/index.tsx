@@ -1,7 +1,8 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { OwnerInfo, Wrapper, Name } from './styles';
+
+import AvatarProfile from 'components/AvatarProfile';
 
 export type PostOwnerProps = {
   avatarSrc: string | undefined;
@@ -23,8 +24,8 @@ export default function PostOwner({
   return (
     <Wrapper>
       <Link href={`/${slug}/${authorId}`}>
-        <Image
-          src={avatarSrc ?? '/assets/profile.png'}
+        <AvatarProfile
+          src={avatarSrc}
           alt="Avatar do proprietário do blog"
           width={130}
           height={130}

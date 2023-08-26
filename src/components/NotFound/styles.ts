@@ -13,6 +13,10 @@ export const Animation404Container = styled.div`
     display: flex;
     align-items: center;
     gap: ${theme.spacings.xsmall};
+
+    img {
+      background-color: ${theme.colors.primary};
+    }
   `}
 `;
 
@@ -42,12 +46,14 @@ export const Navigation = styled.div`
     justify-content: center;
 
     a {
-      color: ${theme.colors.text.secondary};
+      color: ${theme.colors.light};
+      background-color: ${theme.title === 'dark'
+        ? theme.colors.darkGray
+        : theme.colors.primary};
       display: flex;
       align-items: center;
       justify-content: center;
       padding: ${theme.spacings.xsmall};
-      background-color: ${theme.colors.primary};
       border-radius: ${theme.border.radius.big};
       width: 50%;
       height: 3rem;
