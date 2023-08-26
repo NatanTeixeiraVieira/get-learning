@@ -2,6 +2,9 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   ${({ theme }) => css`
+    .jodit-toolbar__box {
+      position: static !important;
+    }
     .jodit-toolbar__box,
     .jodit-status-bar {
       background-color: ${theme.title === 'dark' &&

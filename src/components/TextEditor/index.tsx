@@ -26,6 +26,11 @@ export default forwardRef<Jodit, TextEditorProps>(function TextEditor(
     readonly: false,
     height: 500,
     theme: currentTheme.title,
+    toolbarButtonSize: 'middle',
+    enter: 'p',
+    defaultMode: 1,
+    defaultActionOnPaste: 'insert_as_text',
+    removeButtons: ['font', 'fontsize', 'lineHeight'],
   };
   return (
     <Container>
