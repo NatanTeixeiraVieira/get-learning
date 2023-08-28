@@ -1,14 +1,3 @@
-export type Author = {
-  name: string;
-  description: string;
-  id: string;
-  avatar: {
-    id: string;
-    url: string;
-  };
-  slug: string;
-};
-
 export type Category = {
   name: string;
   slug: string;
@@ -19,18 +8,20 @@ export type Tag = {
   slug: string;
 };
 
+export type CoverImage = {
+  name: string;
+  url: string;
+};
+
 export type Post = {
-  author: Author;
-  coverImage: {
-    id: string;
-    url: string;
-  };
-  subtitle: string;
+  authorId: string;
+  coverImage: CoverImage;
+  excerpt: string;
   allowComents: boolean;
-  categories: Category[];
+  category: Category;
   title: string;
   content: string;
-  tags: Tag[];
-  id: string;
+  tags: Tag[] | [];
+  postId: string;
   createdAt: number;
 };
