@@ -62,6 +62,8 @@ export const PostImage = styled.div`
       border-radius: 12px;
       width: 100%;
       height: 11.25rem;
+      transition: ${theme.transition.default};
+
       &:hover {
         opacity: 0.9;
       }
