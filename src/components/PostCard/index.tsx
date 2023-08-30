@@ -29,7 +29,7 @@ export default function PostCard({
     <Container>
       {isPostOwner && (
         <Options>
-          <UpdatePost>
+          <UpdatePost title="Editar">
             <Link
               href={{
                 pathname: '/edit',
