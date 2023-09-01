@@ -7,15 +7,24 @@ import { Root, RootContent } from './styles';
 export type DialogBoxRootProps = {
   children: ReactNode;
   open: boolean;
+  width?: string;
 };
 
-export default function DialogBoxRoot({ children, open }: DialogBoxRootProps) {
+export default function DialogBoxRoot({
+  children,
+  open,
+  width = '50%',
+}: DialogBoxRootProps) {
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : 'auto';
   }, [open]);
   return (
-    <Root open={open}>
-      <RootContent>{children}</RootContent>
-    </Root>
+    <>
+      {open && (
+        <Root>
+          <RootContent width={width}>{children}</RootContent>
+        </Root>
+      )}
+    </>
   );
 }
