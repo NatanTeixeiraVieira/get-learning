@@ -26,6 +26,18 @@ export const password = z
 
 export const acceptedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
+export const image = z
+  .any()
+  .refine((image) => image.length > 0, 'Por favor, insira uma imagem.')
+  .refine(
+    (files) => files?.[0]?.size <= 5_000_000,
+    `O tamanho máximo da imagem deve ser 5Mb.`
+  )
+  .refine(
+    (files) => acceptedImageTypes.includes(files?.[0]?.type),
+    'Somente imagens .jpg, .jpeg e .png são permitidas.'
+  );
+
 export const registerFormSchema = z.object({
   userName,
   email,
@@ -53,17 +65,7 @@ export const makePostFormSchema = z.object({
       'Selecione uma categoria.'
     ),
   allowComents: z.boolean(),
-  coverImage: z
-    .any()
-    .refine((image) => image.length > 0, 'Por favor, insira uma imagem.')
-    .refine(
-      (files) => files?.[0]?.size <= 5_000_000,
-      `O tamanho máximo da imagem deve ser 5Mb.`
-    )
-    .refine(
-      (files) => acceptedImageTypes.includes(files?.[0]?.type),
-      'Somente imagens .jpg, .jpeg e .png são permitidas.'
-    ),
+  coverImage: image,
 });
 
 export const textEditorSchema = z.string().refine(
@@ -73,6 +75,11 @@ export const textEditorSchema = z.string().refine(
     }).split(/\s+/).length >= 3,
   'Pouco conteúdo. Por favor, escreva mais.'
 );
+
+export const accountInfosSchema = z.object({
+  name: userName,
+  description: z.string().trim(),
+});
 
 export const validatePostToSendSchema = z.object({
   title: makePostFormSchema.shape.title,

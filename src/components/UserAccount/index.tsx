@@ -92,7 +92,7 @@ export default function UserAccount() {
                 <Link href="/makePost">Publicar post</Link>
               </NavigationItems>
               <NavigationItems>
-                <Link href="/">Configurações da conta</Link>
+                <Link href="/account">Configurações da conta</Link>
               </NavigationItems>
               <ToggleThemeArea>
                 <ThemeIcon onClick={() => toggleTheme('dark')}>
