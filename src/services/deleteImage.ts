@@ -1,8 +1,8 @@
 import { deleteObject, ref } from 'firebase/storage';
 import { storage } from 'lib/firebaseWebConfig';
 
-export const deleteImage = async (coverImageName: string) => {
-  const imageToDelete = ref(storage, `coverImage/${coverImageName}`);
+export const deleteImage = async (url: string) => {
+  const imageToDelete = ref(storage, url);
   deleteObject(imageToDelete)
     .then(() => {
       return;

@@ -1,13 +1,15 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { Camera } from 'lucide-react';
+import { updateAvatar } from 'services/updateAuthor';
 import useAccountInfosStore from 'store/accountInfos';
 import { Author } from 'types/author';
-import { image } from 'utils/validations';
-import { z } from 'zod';
+import translateText from 'utils/translateText';
 
 import { Avatar, AvatarImage, Container, EditAvatar, Infos } from './styles';
 
@@ -21,11 +23,9 @@ type AccountInfosProps = {
   authorLoggedInfos: Author;
 };
 
-const avatarSchema = z.object({
-  avatarImage: image,
-});
-
-type AvatarDatas = z.infer<typeof avatarSchema>;
+export type AvatarDatas = {
+  avatarImage: FileList;
+};
 
 export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
   const {
@@ -36,24 +36,34 @@ export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, dirtyFields, isSubmitting },
-  } = useForm<AvatarDatas>({});
+  } = useForm<AvatarDatas>({
+    defaultValues: {
+      avatarImage: undefined,
+    },
+  });
 
   const [editAvatarImageIsOpen, setEditAvatarImageIsOpen] = useState(false);
   const [previewAvatarImage, setPreviewAvatarImage] = useState('');
+
+  const router = useRouter();
 
   const watchAvatarImage = watch('avatarImage');
 
   useEffect(() => {
     const handleEditAvatarImage = () => {
       if (errors.avatarImage) {
+        console.log(errors.avatarImage);
         return;
       }
 
-      const previewUrl = URL.createObjectURL(watchAvatarImage[0]);
+      if (watchAvatarImage) {
+        const previewUrl = URL.createObjectURL(watchAvatarImage[0]);
 
-      setPreviewAvatarImage(previewUrl);
-      setEditAvatarImageIsOpen(true);
+        setPreviewAvatarImage(previewUrl);
+        setEditAvatarImageIsOpen(true);
+      }
     };
 
     if (dirtyFields.avatarImage) {
@@ -62,11 +72,30 @@ export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
   }, [watchAvatarImage, errors.avatarImage, dirtyFields.avatarImage]);
 
   const handleCloseDialogBox = () => {
+    setPreviewAvatarImage('');
+    reset();
     setEditAvatarImageIsOpen(false);
   };
 
-  const onSubmit: SubmitHandler<AvatarDatas> = (datas) => {
-    console.log(datas);
+  const onSubmit: SubmitHandler<AvatarDatas> = async (datas) => {
+    const responseUpdateAvatar = await updateAvatar(
+      authorLoggedInfos.authorId,
+      authorLoggedInfos.avatar?.name,
+      datas
+    );
+
+    const translatedResponse = (
+      await translateText(responseUpdateAvatar.datas.message)
+    ).toLowerCase();
+
+    if (responseUpdateAvatar.ok) {
+      setEditAvatarImageIsOpen(false);
+      router.refresh();
+      toast.success(translatedResponse + '.');
+      return;
+    }
+
+    toast.error(translatedResponse + '.');
   };
 
   return (

@@ -16,8 +16,11 @@ export const updatePost = async (
   postReceived: PostReceived
 ) => {
   try {
-    await deleteImage(coverImageName);
-    const responseUploadImage = await uploadImage(postReceived.coverImage);
+    await deleteImage(`coverImage/${coverImageName}`);
+    const responseUploadImage = await uploadImage(
+      postReceived.coverImage,
+      'coverImage'
+    );
 
     const postSendBackend = {
       title: postReceived.title,
