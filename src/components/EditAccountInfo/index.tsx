@@ -1,8 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { updateInfo } from 'services/updateAuthor';
 import useAccountInfosStore from 'store/accountInfos';
 import { AccountInfosDatas } from 'types/accountInfosDatas';
 import { Author } from 'types/author';
@@ -36,6 +39,8 @@ export default function EditAccountInfo({
     state: { editIsOpen, dialogBoxDescriptor },
     actions: { closeDialogBox },
   } = useAccountInfosStore();
+
+  const router = useRouter();
   const descriptorWithFallback = dialogBoxDescriptor ?? 'name';
 
   const handleCloseDialogBox = () => {
@@ -43,8 +48,32 @@ export default function EditAccountInfo({
     closeDialogBox();
   };
 
-  const onSubmit: SubmitHandler<AccountInfosDatas> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<AccountInfosDatas> = async (datas) => {
+    if (
+      datas.name !== authorLoggedInfos.name ||
+      datas.description !== authorLoggedInfos.description
+    ) {
+      const responseUpdateInfo = await updateInfo(
+        authorLoggedInfos.authorId,
+        datas
+      );
+      if (responseUpdateInfo.ok) {
+        closeDialogBox();
+        const message =
+          datas.name !== authorLoggedInfos.name
+            ? 'Nome de usuário atualizado com sucesso.'
+            : 'Descrição atualizada com sucesso.';
+        router.refresh();
+        toast.success(message);
+        return;
+      }
+
+      toast.error(
+        datas.name !== authorLoggedInfos.name
+          ? 'Falha ao atualizar o nome de usuário. Por favor, tente novamente mais tarde.'
+          : 'Falha ao atualizar a descrição. Por favor, tente novamente mais tarde.'
+      );
+    }
   };
 
   const text = dialogBoxDescriptor === 'name' ? 'Nome de usuário' : 'Descrição';
