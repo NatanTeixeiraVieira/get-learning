@@ -16,7 +16,8 @@ const animationSpin = keyframes`
 const backgroundColors = {
   default: (theme: DefaultTheme) =>
     theme.title === 'light' ? theme.colors.primary : theme.colors.darkGray,
-  secondary: (theme: DefaultTheme) => theme.colors.darkGray,
+  secondary: (theme: DefaultTheme) =>
+    theme.title === 'light' ? theme.colors.darkGray : theme.colors.primary,
   destructive: (theme: DefaultTheme) => theme.colors.destructive,
 };
 
@@ -25,7 +26,7 @@ export const ButtonContainer = styled.button<ButtonProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: ${theme.spacings.xxxsmall};
+    padding: ${theme.spacings.xxxsmall} ${theme.spacings.xsmall};
     background-color: ${backgroundColors[variant](theme)};
     opacity: ${disabled ? '0.8' : '1'};
     color: ${theme.colors.light};

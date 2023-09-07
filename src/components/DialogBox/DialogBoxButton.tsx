@@ -17,7 +17,7 @@ export default function DialogBoxButton({
 }: DialogBoxButtonProps) {
   return (
     <ButtonDialogBoxContainer>
-      <Button.Root width="fit-content" variant={variant} {...props}>
+      <Button.Root variant={variant} {...props}>
         {children}
       </Button.Root>
     </ButtonDialogBoxContainer>
