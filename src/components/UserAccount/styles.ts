@@ -2,16 +2,17 @@
 
 import styled, { css } from 'styled-components';
 
-const accountIconHeight = '2.5rem';
+const accountIconSize = '2.5rem';
 
 export const Container = styled.div``;
 
 export const AccountIcon = styled.div`
   ${({ theme }) => css`
     position: absolute;
-    top: calc((4.5rem - ${accountIconHeight}) / 2);
+    top: calc((4.5rem - ${accountIconSize}) / 2);
     right: ${theme.spacings.medium};
-    height: ${accountIconHeight};
+    height: ${accountIconSize};
+    width: ${accountIconSize};
     display: flex;
     align-items: center;
     cursor: pointer;

@@ -63,7 +63,16 @@ export default function UserAccount() {
           setShowAccountMenu((prev) => !prev);
         }}
       >
-        <UserCircle2 size="2.5rem" strokeWidth={2} color="white" />
+        {authorLoggedInfos?.avatar && (
+          <AvatarProfile
+            src={authorLoggedInfos?.avatar?.url}
+            alt="Avatar do proprietário do usuário logado"
+            fill
+          />
+        )}
+        {!authorLoggedInfos?.avatar && (
+          <UserCircle2 size="2.5rem" strokeWidth={2} color="white" />
+        )}
       </AccountIcon>
 
       <>
