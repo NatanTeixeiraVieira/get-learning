@@ -24,4 +24,6 @@ export type Post = {
   tags: Tag[] | [];
   postId: string;
   createdAt: number;
+  like: number | undefined;
+  dislike: number | undefined;
 };

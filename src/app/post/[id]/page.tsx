@@ -9,6 +9,7 @@ import { textFormatter } from 'utils/textFormatter';
 
 import { Tags, Wrapper } from './styles';
 
+import Feedback from 'components/Feedback';
 import GoToTop from 'components/GoToTop';
 import PostContent from 'components/PostContent';
 import PostHeader from 'components/PostHeader';
@@ -43,14 +44,14 @@ export const generateMetadata = async ({
 
 export default async function Post({ params }: PostProps) {
   const post = await fetcher<Post>(`/post/${params.id}`, {
-    next: { revalidate: 10 },
+    cache: 'no-store',
   });
   if (!post.ok) {
     notFound();
   }
 
   const author = await fetcher<Author>(`/author/id/${post.datas.authorId}`, {
-    next: { revalidate: 10 },
+    cache: 'no-store',
   });
 
   if (!author.ok) {
@@ -91,6 +92,14 @@ export default async function Post({ params }: PostProps) {
           </Link>
         ))}
       </Tags>
+      <Feedback
+        postId={post.datas.postId}
+        initialLikeNumber={post.datas.like}
+        initialDislikeNumber={post.datas.dislike}
+        authorId={author.datas.authorId}
+        authorLikedPosts={author.datas.likedPosts}
+        authorDislikedPosts={author.datas.dislikedPosts}
+      />
     </Wrapper>
   );
 }

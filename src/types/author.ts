@@ -9,4 +9,6 @@ export type Author = {
   };
   slug: string;
   authorId: string;
+  likedPosts?: string[];
+  dislikedPosts?: string[];
 };
