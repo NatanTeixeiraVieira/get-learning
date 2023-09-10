@@ -28,8 +28,8 @@ export const ButtonContainer = styled.button<ButtonProps>`
     justify-content: center;
     padding: ${theme.spacings.xxxsmall} ${theme.spacings.xsmall};
     background-color: ${backgroundColors[variant](theme)};
-    opacity: ${disabled ? '0.8' : '1'};
     color: ${theme.colors.light};
+    opacity: ${disabled ? '0.8' : '1'};
     font-size: 1rem;
     width: ${width};
     height: 3rem;
@@ -42,10 +42,17 @@ export const ButtonContainer = styled.button<ButtonProps>`
 const IconSize = '1.5rem';
 
 export const IconSpin = styled.div`
-  display: flex;
-  svg {
-    width: ${IconSize};
-    height: ${IconSize};
-    animation: ${animationSpin} 1.5s linear infinite;
-  }
+  ${({ theme }) => css`
+    display: flex;
+
+    svg {
+      & * {
+        color: ${theme.colors.light};
+      }
+
+      width: ${IconSize};
+      height: ${IconSize};
+      animation: ${animationSpin} 1.5s linear infinite;
+    }
+  `}
 `;
