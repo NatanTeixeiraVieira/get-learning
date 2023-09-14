@@ -53,7 +53,6 @@ export async function PATCH(request: NextRequest, { params }: Context) {
       });
     return response;
   } catch (error) {
-    console.log(error);
     return NextResponse.json({ message: error }, { status: 500 });
   }
 }
