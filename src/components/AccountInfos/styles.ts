@@ -8,9 +8,6 @@ export const AvatarImage = styled.div`
   ${({ theme }) => css`
     text-align: center;
     margin-top: ${theme.spacings.xsmall};
-    img {
-      border-radius: 100%;
-    }
   `}
 `;
 
@@ -25,20 +22,24 @@ export const Avatar = styled.div`
     text-align: center;
 
     label {
+      width: fit-content;
       cursor: pointer;
+      display: flex;
+      margin: 0 auto;
 
-      &:hover > img {
-        opacity: 0.8;
+      &:hover img {
+        opacity: 0.85;
+        transition: ${theme.transition.default};
       }
     }
 
     svg {
-      position: absolute;
+      position: relative;
       border-radius: 100%;
       padding: 5px;
       background-color: ${theme.colors.light};
-      margin-left: -2rem;
-      margin-top: 90px;
+      right: 30px;
+      top: 90px;
       z-index: 2;
     }
 
