@@ -9,11 +9,11 @@ export const Wrapper = styled.section`
   `}
 `;
 
-const LikeAndDislike = styled.div`
-  ${({ theme }) => css`
+const LikeAndDislike = styled.div<{ isAuthenticated: boolean }>`
+  ${({ theme, isAuthenticated }) => css`
     display: flex;
     gap: ${theme.spacings.xxxsmall};
-    cursor: pointer;
+    cursor: ${isAuthenticated ? 'pointer' : ''};
     padding: ${theme.spacings.xxxsmall} ${theme.spacings.xsmall};
     border-radius: ${theme.border.radius.big};
     -webkit-user-select: none;
@@ -22,7 +22,7 @@ const LikeAndDislike = styled.div`
     user-select: none;
 
     &:hover {
-      background-color: ${`${theme.colors.light}CC`};
+      background-color: ${isAuthenticated ? `${theme.colors.light}CC` : ''};
     }
   `}
 `;

@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 import { feedback } from 'constants/localStorageKeys';
@@ -27,6 +28,8 @@ export default function Feedback({
   authorLikedPosts,
   authorDislikedPosts,
 }: FeedbackProps) {
+  const { status } = useSession();
+
   const [markedFeedback, setMarkedFeedback] = useState<MarkedFeedback>(() => {
     if (authorLikedPosts?.includes(postId)) return 'like';
     if (authorDislikedPosts?.includes(postId)) return 'dislike';
@@ -126,13 +129,21 @@ export default function Feedback({
     setDislikeNumberState((prev) => (prev += 1));
   };
 
+  const isAuthenticated = status === 'authenticated';
+
   return (
     <Wrapper>
-      <Like onClick={handleMarkLike}>
+      <Like
+        onClick={isAuthenticated ? handleMarkLike : undefined}
+        isAuthenticated={isAuthenticated}
+      >
         <ThumbsUp fill={markedFeedback === 'like' ? 'black' : 'white'} />
         {likeNumber}
       </Like>
-      <Dislike onClick={handleMarkDislike}>
+      <Dislike
+        onClick={isAuthenticated ? handleMarkDislike : undefined}
+        isAuthenticated={isAuthenticated}
+      >
         <ThumbsDown fill={markedFeedback === 'dislike' ? 'black' : 'white'} />
         {dislikeNumber}
       </Dislike>
