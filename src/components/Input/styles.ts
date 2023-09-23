@@ -28,6 +28,7 @@ export const InputField = styled.input`
     outline: none;
     flex: auto;
     font-size: 1rem;
+    background-color: inherit;
 
     &::placeholder {
       color: ${theme.colors.placeholder};

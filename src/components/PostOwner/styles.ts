@@ -7,7 +7,7 @@ export const Wrapper = styled.section`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 80%;
+    max-width: 700px;
     margin: 0 auto ${theme.spacings.huge};
     gap: ${theme.spacings.small};
 
@@ -17,8 +17,6 @@ export const Wrapper = styled.section`
     }
 
     img {
-      border-radius: 100%;
-
       ${theme.media.mobile} {
         width: 90px;
         height: 90px;

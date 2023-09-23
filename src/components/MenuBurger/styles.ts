@@ -22,6 +22,7 @@ const menuLinesAnimation = () => css`
 
 export const Container = styled.div<Pick<MenuBurgerProps, 'showMenu'>>`
   ${({ theme, showMenu }) => css`
+    position: ${showMenu && 'fixed'};
     z-index: 999;
     width: 24px;
     cursor: pointer;
