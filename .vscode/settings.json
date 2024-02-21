@@ -1,0 +1,91 @@
+{
+  "editor.lineHeight": 22,
+  "editor.fontFamily": "Jetbrains Mono",
+  "editor.fontLigatures": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescriptreact",
+    "graphql"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.rulers": [80],
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+
+  "[javascript]": {
+    "editor.autoClosingBrackets": "always",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.autoClosingBrackets": "always",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.autoClosingBrackets": "always",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.autoClosingBrackets": "always",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // Aplica um sinal visual na linha inteira
+  "editor.renderLineHighlight": "all",
+
+  // Define o tema dos ícones na sidebar
+  "workbench.iconTheme": "material-icon-theme",
+  // "color-highlight.languages": ["*", "!css", "!html"],
+
+  // =================== CONFIG: prisma ===================
+  "[prisma]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+
+  // =================== CONFIG: segurança ===================
+  "security.workspace.trust.untrustedFiles": "newWindow", // <== Abrir arquivos não confiáveis em uma nova janela
+
+  // Outras configurações
+  "workbench.startupEditor": "welcomePage",
+  "editor.tabSize": 2,
+  "terminal.integrated.env.windows": {},
+  "tabnine.experimentalAutoImports": true,
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": [
+        "${env:windir}\\Sysnative\\cmd.exe",
+        "${env:windir}\\System32\\cmd.exe"
+      ],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "source": "Git Bash"
+    },
+    "Ubuntu (WSL)": {
+      "path": "C:\\WINDOWS\\System32\\wsl.exe",
+      "args": ["-d", "Ubuntu"]
+    }
+  },
+  // "terminal.integrated.defaultProfile.windows": "Ubuntu (WSL)",
+  // "terminal.integrated.defaultProfile.windows": "Git Bash",
+
+  "terminal.integrated.env.linux": {},
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "workbench.colorTheme": "Dracula",
+  "editor.fontSize": 16,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "console-ninja.featureSet": "Community"
+}

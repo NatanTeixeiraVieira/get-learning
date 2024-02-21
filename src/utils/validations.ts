@@ -78,7 +78,7 @@ export const textEditorSchema = z.string().refine(
 
 export const accountInfosSchema = z.object({
   name: userName,
-  description: z.string().trim(),
+  description: z.string().trim().optional(),
 });
 
 export const validatePostToSendSchema = z.object({

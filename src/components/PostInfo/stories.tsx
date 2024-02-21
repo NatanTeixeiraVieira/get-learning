@@ -23,7 +23,7 @@ export default {
   args: {
     createdAt: postMock.createdAt,
     author: postMock.author,
-    categories: postMock.categories,
+    category: postMock.category,
   },
   argTypes: {
     createdAt: {

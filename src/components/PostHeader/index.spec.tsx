@@ -15,7 +15,7 @@ describe('<PostHeader />', () => {
         imageSrc={postMock.author.avatar.url}
         createdAt={postMock.createdAt}
         author={postMock.author}
-        categories={postMock.categories}
+        category={postMock.category}
       />
     );
     expect(

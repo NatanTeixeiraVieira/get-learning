@@ -10,7 +10,7 @@ describe('<PostInfo />', () => {
     renderComponent(
       <PostInfo
         author={postMock.author}
-        categories={postMock.categories}
+        category={postMock.category}
         createdAt={postMock.createdAt}
       />
     );
@@ -26,10 +26,10 @@ describe('<PostInfo />', () => {
     );
 
     expect(
-      screen.getByRole('link', { name: postMock.categories[0].name })
-    ).toHaveAttribute('href', `/category/${postMock.categories[0].slug}`);
+      screen.getByRole('link', { name: postMock.category[0].name })
+    ).toHaveAttribute('href', `/category/${postMock.category[0].slug}`);
     expect(
-      screen.getByRole('link', { name: postMock.categories[1].name })
-    ).toHaveAttribute('href', `/category/${postMock.categories[1].slug}`);
+      screen.getByRole('link', { name: postMock.category[1].name })
+    ).toHaveAttribute('href', `/category/${postMock.category[1].slug}`);
   });
 });

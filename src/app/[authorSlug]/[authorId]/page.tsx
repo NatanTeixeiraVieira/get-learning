@@ -2,13 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getCurrentUser } from 'lib/session';
-import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
 import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
 import usePostsStore from 'store/posts';
 import InitializerPostsStore from 'store/posts/initializerStore';
-import { Author } from 'types/author';
-import { Post } from 'types/post';
 import fetcher from 'utils/fetcher';
 import { textFormatter } from 'utils/textFormatter';
 

@@ -25,11 +25,10 @@ export default {
   ],
   args: {
     title: postMock.title,
-    subtitle: textFormatter(postMock.subtitle),
+    subtitle: textFormatter(postMock.excerpt),
     imageSrc: postMock.coverImage.url,
     createdAt: postMock.createdAt,
-    author: postMock.author,
-    categories: postMock.categories,
+    category: postMock.category,
   },
 } as Meta<PostHeaderProps>;
 

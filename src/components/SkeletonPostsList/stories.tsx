@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Providers } from 'providers/providers';
 
-import SkeletonPostsList from '.';
+import SkeletonPostsListRoot from '.';
 
 export default {
   title: 'SkeletonPostsList',
-  component: SkeletonPostsList,
+  component: SkeletonPostsListRoot,
   decorators: [
     (Story) => (
       <Providers>

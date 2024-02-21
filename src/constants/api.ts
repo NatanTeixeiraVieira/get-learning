@@ -1,1 +1,1 @@
-export const postsPerRequest = 24;
+export const postsPerRequest = 12;
