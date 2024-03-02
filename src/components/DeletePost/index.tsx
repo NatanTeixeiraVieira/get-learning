@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { Trash2 } from 'lucide-react';
-import { deletePost } from 'services/deletePost';
+import { deletePost } from 'services/post';
 
 import { Container } from './styles';
 
@@ -13,13 +13,9 @@ import { DialogBox } from 'components/DialogBox';
 
 type DeletePostProps = {
   postId: string;
-  coverImageName: string;
 };
 
-export default function DeletePost({
-  postId,
-  coverImageName,
-}: DeletePostProps) {
+export default function DeletePost({ postId }: DeletePostProps) {
   const router = useRouter();
   const [showDialogBox, setShowDialogBox] = useState(false);
 
@@ -29,8 +25,8 @@ export default function DeletePost({
 
   const handleDeletePost = async () => {
     handleCloseDialogBox();
-    const response = await deletePost(postId, coverImageName);
-    if (response.ok) {
+    const response = await deletePost(postId);
+    if (response.success) {
       toast.success('Post deletado com sucesso.');
       router.refresh();
       return;

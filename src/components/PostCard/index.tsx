@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { Pencil } from 'lucide-react';
-import { CoverImage } from 'types/post';
+import { CoverImage } from 'types/FindAllPosts';
 import { textFormatter } from 'utils/textFormatter';
 
 import { Container, PostImage, Options, Subtitle, UpdatePost } from './styles';
@@ -41,7 +41,7 @@ export default function PostCard({
               <Pencil size="1rem" />
             </Link>
           </UpdatePost>
-          <DeletePost postId={id} coverImageName={coverImage.name} />
+          {/* <DeletePost postId={id} coverImageName={coverImage.name} /> */}
         </Options>
       )}
       <PostImage>

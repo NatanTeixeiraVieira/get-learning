@@ -1,6 +1,5 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
@@ -15,11 +14,10 @@ import {
 
 import HeaderLink from 'components/HeaderLink';
 import MenuBurger from 'components/MenuBurger';
-import UserAccount from 'components/UserAccount';
+// import UserAccount from 'components/UserAccount';
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
-  const { status } = useSession();
 
   const handleCloseMenu = useCallback(() => {
     setShowMenu(false);
@@ -34,15 +32,15 @@ export default function Header() {
   return (
     <HeaderContainer>
       <MenuBurger onClick={handleShowMenu} showMenu={showMenu} />
-      {status === 'authenticated' && <UserAccount />}
-      {status === 'unauthenticated' && (
-        <nav>
-          <LoginAndRegister>
-            <HeaderLink href="/login">Entrar</HeaderLink>
-            <HeaderLink href="/register">Cadastrar</HeaderLink>
-          </LoginAndRegister>
-        </nav>
-      )}
+      {/* {status === 'authenticated' && <UserAccount />} */}
+      {/* {status === 'unauthenticated' && ( */}
+      <nav>
+        <LoginAndRegister>
+          <HeaderLink href="/login">Entrar</HeaderLink>
+          <HeaderLink href="/register">Cadastrar</HeaderLink>
+        </LoginAndRegister>
+      </nav>
+      {/* )} */}
       <HeaderContent showMenu={showMenu} role="menubar">
         <nav>
           <ul>

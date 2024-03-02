@@ -2,9 +2,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
-import usePostsStore from 'store/posts';
-import InitializerPostsStore from 'store/posts/initializerStore';
 import fetcher from 'utils/fetcher';
 import { textFormatter } from 'utils/textFormatter';
 
@@ -18,19 +15,13 @@ import { NoPostFound, Wrapper } from './style';
 export const generateMetadata = async ({
   params,
 }: AuthorProps): Promise<Metadata> => {
-  try {
-    const author = await fetcher<Author>(`/author/id/${params.authorId}`, {
-      next: { revalidate: 10 },
-    });
-    return {
-      title: `${author.datas.name}`,
-      description: author.datas.description,
-    };
-  } catch (err) {
-    return {
-      title: 'Página não encontrada',
-    };
-  }
+  const author = await fetcher<Author>(`/author/id/${params.authorId}`, {
+    next: { revalidate: 10 },
+  });
+  return {
+    title: `${author.datas.name}`,
+    description: author.datas.description,
+  };
 };
 
 type AuthorProps = {

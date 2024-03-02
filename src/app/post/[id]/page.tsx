@@ -2,14 +2,11 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { Author } from 'types/author';
-import { Post } from 'types/post';
-import fetcher from 'utils/fetcher';
+import { findPostById } from 'services/post';
 import { textFormatter } from 'utils/textFormatter';
 
 import { Tags, Wrapper } from './styles';
 
-import Feedback from 'components/Feedback';
 import GoToTop from 'components/GoToTop';
 import PostContent from 'components/PostContent';
 import PostHeader from 'components/PostHeader';
@@ -24,61 +21,44 @@ type PostProps = {
 export const generateMetadata = async ({
   params,
 }: PostProps): Promise<Metadata> => {
-  try {
-    const post = await fetcher<Post>(`/post/${params.id}`, {
-      next: { revalidate: 10 },
-    });
-    const author = await fetcher<Author>(`/author/id/${post.datas.authorId}`, {
-      next: { revalidate: 10 },
-    });
-    return {
-      title: `${post.datas.title} - ${author.datas.name}`,
-      description: post.datas.excerpt,
-    };
-  } catch (err) {
-    return {
-      title: 'Página não encontrada',
-    };
-  }
+  const post = await findPostById(params.id);
+
+  return {
+    title: `${post.data.title} - ${post.data.author.name}`,
+    description: post.data.subtitle,
+  };
 };
 
 export default async function Post({ params }: PostProps) {
-  const post = await fetcher<Post>(`/post/${params.id}`, {
-    cache: 'no-store',
-  });
-  if (!post.ok) {
+  const postResponse = await findPostById(params.id);
+  const post = postResponse.data;
+  console.log(post);
+
+  if (!postResponse.success) {
     notFound();
-  }
-
-  const author = await fetcher<Author>(`/author/id/${post.datas.authorId}`, {
-    cache: 'no-store',
-  });
-
-  if (!author.ok) {
-    throw new Error('Algo deu errado. Por favor tente novamente mais tarde.');
   }
 
   return (
     <Wrapper>
       <GoToTop />
       <PostOwner
-        avatarSrc={author.datas.avatar?.url}
-        name={author.datas.name}
-        description={textFormatter(author.datas.description)}
-        slug={author.datas.slug}
-        authorId={author.datas.authorId}
+        avatarSrc={post.author.authorImage?.url}
+        name={post.author.name}
+        description={textFormatter(post.author.description)}
+        slug={post.author.slug}
+        authorId={post.author.id}
       />
       <PostHeader
-        title={post.datas.title}
-        subtitle={textFormatter(post.datas.excerpt)}
-        imageSrc={post.datas.coverImage.url}
-        createdAt={post.datas.createdAt}
-        category={post.datas.category}
+        title={post.title}
+        subtitle={textFormatter(post.subtitle)}
+        imageSrc={post.coverImage.url}
+        createdAt={post.postTime}
+        categories={post.categories}
       />
-      <PostContent content={post.datas.content} />
+      <PostContent content={post.content} />
       <Tags>
         Tags:{' '}
-        {post.datas.tags.map((tag) => (
+        {post.tags.map((tag) => (
           <Link
             href={{
               pathname: `/tag/${tag.slug}`,
@@ -92,14 +72,14 @@ export default async function Post({ params }: PostProps) {
           </Link>
         ))}
       </Tags>
-      <Feedback
-        postId={post.datas.postId}
-        initialLikeNumber={post.datas.like}
-        initialDislikeNumber={post.datas.dislike}
-        authorId={author.datas.authorId}
-        authorLikedPosts={author.datas.likedPosts}
-        authorDislikedPosts={author.datas.dislikedPosts}
-      />
+      {/* <Feedback
+        postId={post.postId}
+        initialLikeNumber={post.like}
+        initialDislikeNumber={post.dislike}
+        authorId={author.authorId}
+        authorLikedPosts={author.likedPosts}
+        authorDislikedPosts={author.dislikedPosts}
+      /> */}
     </Wrapper>
   );
 }

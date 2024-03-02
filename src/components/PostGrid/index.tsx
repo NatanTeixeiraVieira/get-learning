@@ -1,25 +1,28 @@
-import usePostsStore from 'store/posts';
+import { Post } from 'types/FindAllPosts';
 
 import { Wrapper } from './styles';
 
 import LoadMorePosts from 'components/LoadMorePosts';
 import PostCard from 'components/PostCard';
 
-export default function PostGrid({ isPostOwner = false }) {
-  const { posts } = usePostsStore.getState().state;
+type PostGridProps = {
+  posts: Post[];
+};
+
+export default function PostGrid({ posts }: PostGridProps) {
   return (
     <Wrapper>
       {posts.map((post) => (
         <PostCard
-          key={post.postId}
+          key={post.id}
           title={post.title}
-          subtitle={post.excerpt}
+          subtitle={post.subtitle}
           coverImage={post.coverImage}
-          id={post.postId}
-          isPostOwner={isPostOwner}
+          id={post.id}
+          isPostOwner={false}
         />
       ))}
-      <LoadMorePosts isPostOwner={isPostOwner} />
+      {/* <LoadMorePosts isPostOwner={false} /> */}
     </Wrapper>
   );
 }
