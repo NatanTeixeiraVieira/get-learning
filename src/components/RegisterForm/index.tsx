@@ -5,10 +5,13 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { emailIdKey, tokenEmailConfirmationKey } from 'constants/cookiesKeys';
+import { emailConfirmationExpiresTimeInSeconds } from 'constants/times';
 import { Eye, EyeOff } from 'lucide-react';
-import { createUserAndCheckEmail } from 'services/registerWithCredentials';
-import { RegisterDatas } from 'types/register';
-import { registerFormSchema } from 'utils/validations';
+import { setCookie } from 'nookies';
+import { registerSendEmailVerification } from 'services/auth';
+import { RegisterData } from 'types/registerData';
+import { registerFormSchema } from 'validations/schemas';
 
 import { RegisterFormContainer } from './styles';
 
@@ -20,7 +23,7 @@ export default function RegisterForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, dirtyFields },
-  } = useForm<RegisterDatas>({
+  } = useForm<RegisterData>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: { password: '' },
   });
@@ -31,17 +34,21 @@ export default function RegisterForm() {
     setShowPassword((prev) => !prev);
   };
 
-  const onSubmit = async ({ userName, email, password }: RegisterDatas) => {
-    const responseCreateUserAndCheckEmail = await createUserAndCheckEmail(
-      userName,
-      email,
-      password
-    );
-    console.log(responseCreateUserAndCheckEmail.datas.user);
-
-    if (responseCreateUserAndCheckEmail.ok) {
-      console.log(responseCreateUserAndCheckEmail);
-      toast.success(`Um email de verificação foi enviado para o seu email`);
+  const onSubmit = async ({ userName, email, password }: RegisterData) => {
+    const {
+      success,
+      data: { emailId, token },
+    } = await registerSendEmailVerification(email, password, userName);
+    if (success) {
+      setCookie(null, emailIdKey, emailId, {
+        maxAge: emailConfirmationExpiresTimeInSeconds,
+        path: '/',
+      });
+      setCookie(null, tokenEmailConfirmationKey, token, {
+        maxAge: emailConfirmationExpiresTimeInSeconds,
+        path: '/',
+      });
+      toast.success(`Um email de verificação foi enviado para você`);
       return;
     }
     toast.error('Falha ao realizar cadastro.');

@@ -7,10 +7,21 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  tokenKey,
+  userKey,
+  emailIdKey,
+  tokenEmailConfirmationKey,
+} from 'constants/cookiesKeys';
+import {
+  loginExpiresTimeInMilliseconds,
+  emailConfirmationExpiresTimeInSeconds,
+} from 'constants/times';
 import { EyeOff, Eye } from 'lucide-react';
-import loginWithCredentials from 'services/loginWithCredentials';
-import { LoginDatas } from 'types/login';
-import { loginFormSchema } from 'utils/validations';
+import { setCookie, destroyCookie } from 'nookies';
+import { login } from 'services/auth';
+import { LoginFormData } from 'types/loginFormData';
+import { loginFormSchema } from 'validations/schemas';
 
 import { Button } from 'components/Button';
 import { Input } from 'components/Input';
@@ -22,7 +33,7 @@ export default function LoginForm() {
     register,
     handleSubmit,
     formState: { errors, dirtyFields, isSubmitting },
-  } = useForm<LoginDatas>({
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { password: '' },
   });
@@ -35,14 +46,34 @@ export default function LoginForm() {
     setShowPassword((prev) => !prev);
   };
 
-  const onSubmit = async ({ email, password }: LoginDatas) => {
+  const onSubmit = async ({ email, password }: LoginFormData) => {
     const callbackUrl = searchParams.get('callbackUrl');
-    const response = await loginWithCredentials(email, password);
-    if (response?.error) {
-      toast.error(response.error);
+    const response = await login(email, password);
+    if (!response?.success) {
+      if (response.errorMessage === 'Invalid login or password') {
+        toast.error('Login ou senha inválidos');
+        return;
+      }
+      toast.error('erro');
       return;
     }
 
+    setCookie(null, tokenKey, response.data.token, {
+      maxAge: loginExpiresTimeInMilliseconds,
+      path: '/',
+    });
+    setCookie(null, userKey, JSON.stringify(response.data.user), {
+      maxAge: loginExpiresTimeInMilliseconds,
+      path: '/',
+    });
+    destroyCookie(null, emailIdKey, {
+      maxAge: emailConfirmationExpiresTimeInSeconds,
+      path: '/',
+    });
+    destroyCookie(null, tokenEmailConfirmationKey, {
+      maxAge: emailConfirmationExpiresTimeInSeconds,
+      path: '/',
+    });
     router.push(callbackUrl ?? '/');
   };
 

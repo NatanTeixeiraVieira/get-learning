@@ -1,28 +1,25 @@
 import DOMPurify from 'dompurify';
+import categoriesList from 'utils/categoriesList';
 import { z } from 'zod';
 
-import categoriesList from './categoriesList';
-
-const emailRegEx =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+import { emailRegEx } from './regex';
 
 export const userName = z
-  .string()
-  .nonempty('Esse campo é obrigatório.')
+  .string({ required_error: 'Este campo é obrigatório.' })
+  .min(1, 'Este campo é obrigatório.')
   .min(3, 'Seu nome de usuário deve conter pelo menos 3 caracteres.')
   .trim();
 
 export const email = z
-  .string()
-  .nonempty('Esse campo é obrigatório.')
+  .string({ required_error: 'Este campo é obrigatório.' })
+  .min(1, 'Este campo é obrigatório.')
   .email('Email inválido.')
   .regex(emailRegEx, 'Email inválido.');
 
 export const password = z
-  .string()
-  .nonempty('Esse campo é obrigatório.')
-  .min(6, 'A senha deve ter entre 6 e 60 caracteres.')
-  .max(60, 'A senha deve ter entre 6 e 60 caracteres.');
+  .string({ required_error: 'Este campo é obrigatório.' })
+  .min(1, 'Este campo é obrigatório.')
+  .min(8, 'A senha deve ter pelo menos 8 caracteres.');
 
 export const acceptedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
@@ -51,15 +48,15 @@ export const loginFormSchema = z.object({
 
 export const makePostFormSchema = z.object({
   title: z
-    .string()
-    .nonempty('Este campo é obrigatório.')
+    .string({ required_error: 'Este campo é obrigatório.' })
+    .min(1, 'Este campo é obrigatório.')
     .min(3, 'O título deve conter pelo menos 3 caracteres.'),
   excerpt: z
-    .string()
-    .nonempty('Este campo é obrigatório.')
+    .string({ required_error: 'Este campo é obrigatório.' })
+    .min(1, 'Este campo é obrigatório.')
     .min(3, 'O subtítulo deve conter pelo menos 3 caracteres.'),
   category: z
-    .string()
+    .string({ required_error: 'Este campo é obrigatório.' })
     .refine(
       (category) => categoriesList.includes(category),
       'Selecione uma categoria.'

@@ -32,7 +32,6 @@ export const generateMetadata = async ({
 export default async function Post({ params }: PostProps) {
   const postResponse = await findPostById(params.id);
   const post = postResponse.data;
-  console.log(post);
 
   if (!postResponse.success) {
     notFound();

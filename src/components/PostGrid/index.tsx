@@ -1,4 +1,4 @@
-import { Post } from 'types/FindAllPosts';
+import { Post } from 'types/findAllPosts';
 
 import { Wrapper } from './styles';
 

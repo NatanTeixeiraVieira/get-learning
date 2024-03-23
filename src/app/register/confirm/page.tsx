@@ -1,53 +1,52 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from 'lib/firebaseWebConfig';
-import { saveUserDatas } from 'services/registerWithCredentials';
+import {
+  tokenEmailConfirmationKey,
+  emailIdKey,
+  tokenKey,
+  userKey,
+} from 'constants/cookiesKeys';
+import {
+  emailConfirmationExpiresTimeInSeconds,
+  loginExpiresTimeInMilliseconds,
+} from 'constants/times';
+import { destroyCookie, setCookie, parseCookies } from 'nookies';
+import { registerConfirmEmail } from 'services/auth';
 
-type SaveAuthorProps = {
-  searchParams: {
-    name: string;
-  };
-};
-
-export default function ConfirmRegister({ searchParams }: SaveAuthorProps) {
-  const { status } = useSession();
-
+export default function ConfirmRegister() {
   const router = useRouter();
 
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      const userName = localStorage.getItem('userName');
+  (async () => {
+    const tokenEmailConfirmation = parseCookies()[tokenEmailConfirmationKey];
+    const emailId = parseCookies()[emailIdKey];
 
-      console.log(user);
-      console.log(status);
-      if (
-        user?.emailVerified &&
-        user?.email &&
-        userName &&
-        auth.currentUser?.uid &&
-        status === 'unauthenticated'
-      ) {
-        const responseSaveDatas = saveUserDatas(
-          user.uid,
-          userName,
-          user.email
+    const response = await registerConfirmEmail(
+      emailId,
+      tokenEmailConfirmation
+    );
 
-          // if (responseSaveDatas.ok) {
-          //   const loginResponse = await loginWithCredentials(user.email);
-          //   if (loginResponse?.ok) {
-          //     console.log(loginResponse);
-          //     router.push('/');
-          //     return;
-          //   }
-          // }
-        );
-      }
-    });
-  }, [router, status]);
+    if (response.success && emailId) {
+      setCookie(null, tokenKey, response.data.token, {
+        maxAge: loginExpiresTimeInMilliseconds,
+        path: '/',
+      });
+      setCookie(null, userKey, JSON.stringify(response.data.user), {
+        maxAge: loginExpiresTimeInMilliseconds,
+        path: '/',
+      });
+      destroyCookie(null, emailIdKey, {
+        maxAge: emailConfirmationExpiresTimeInSeconds,
+        path: '/',
+      });
+      destroyCookie(null, tokenEmailConfirmationKey, {
+        maxAge: emailConfirmationExpiresTimeInSeconds,
+        path: '/',
+      });
+      router.push('/');
+    }
+  })();
+
   return;
 }
