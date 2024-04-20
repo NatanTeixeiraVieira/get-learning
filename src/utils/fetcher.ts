@@ -1,24 +1,25 @@
 import { contentTypeJson } from 'constants/request';
+import { Fetcher } from 'types/fetcher';
 
 const fetcher = async <T = unknown>(
   input: RequestInfo | URL,
-  body?: Record<string, unknown> | null,
+  body?: Record<string, unknown> | FormData | null,
   init?: Omit<RequestInit, 'body'>
 ) => {
   const initRequestOptions: RequestInit = {
     ...init,
     headers: {
-      ...init?.headers,
-      'Content-Type': contentTypeJson,
       Accept: contentTypeJson,
+      'Content-Type': contentTypeJson,
+      ...init?.headers,
     },
   };
 
-  const requestOptions = body
-    ? { ...initRequestOptions, body: JSON.stringify(body) }
-    : initRequestOptions;
+  const requesBody = body instanceof FormData ? body : JSON.stringify(body);
 
-  // console.log(requestOptions);
+  const requestOptions = body
+    ? { ...initRequestOptions, body: requesBody }
+    : initRequestOptions;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}${input}`,
@@ -27,15 +28,15 @@ const fetcher = async <T = unknown>(
 
   const data: T = await res.json();
 
-  console.log(data);
-
-  return {
+  const response: Fetcher<T> = {
     data,
     success: res.ok,
     statusCode: res.status,
     status: res.statusText,
     errorMessage: (data as { errorMessage: string }).errorMessage,
   };
+
+  return response;
 };
 
 export default fetcher;

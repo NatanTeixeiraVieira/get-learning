@@ -1,28 +1,21 @@
 import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
-import fetcher from 'utils/fetcher';
+import { userKey } from 'constants/cookiesKeys';
+import { findAuthorById } from 'services/author';
+import { findAllPostsByAuthorId } from 'services/post';
+import { getClientAuthentication } from 'utils/getAuthentication';
+import { getServerAuthentication } from 'utils/server/getAuthentication';
 import { textFormatter } from 'utils/textFormatter';
 
 import { Button } from 'components/Button';
 import Heading from 'components/Heading';
+import LoadMorePosts from 'components/LoadMorePosts';
 import PostGrid from 'components/PostGrid';
 import PostOwner from 'components/PostOwner';
 
 import { NoPostFound, Wrapper } from './style';
-
-export const generateMetadata = async ({
-  params,
-}: AuthorProps): Promise<Metadata> => {
-  const author = await fetcher<Author>(`/author/id/${params.authorId}`, {
-    next: { revalidate: 10 },
-  });
-  return {
-    title: `${author.datas.name}`,
-    description: author.datas.description,
-  };
-};
 
 type AuthorProps = {
   params: {
@@ -31,31 +24,40 @@ type AuthorProps = {
   };
 };
 
+export const generateMetadata = async ({
+  params,
+}: AuthorProps): Promise<Metadata> => {
+  const author = await findAuthorById(params.authorId);
+  return {
+    title: `${author.data.name}`,
+    description: author.data.description,
+  };
+};
+
 export default async function Author({ params }: AuthorProps) {
-  const postsEndpoint = `/posts/author/${params.authorId}`;
-  const authorPosts = await fetcher<Post[]>(postsEndpoint);
+  const [authorPostsRequest, author] = await Promise.all([
+    findAllPostsByAuthorId(params.authorId),
+    findAuthorById(params.authorId),
+  ]);
+  const handleLoadMoreAuthorPosts = async (page: number) => {
+    'use server';
 
-  if (!authorPosts.datas) {
-    notFound();
-  }
+    return findAllPostsByAuthorId(params.authorId, page);
+  };
 
-  const author = await fetcher<Author>(`/author/id/${params.authorId}`, {
-    next: { revalidate: 10 },
-  });
+  const authorPosts = authorPostsRequest.data?._embedded?.postsList;
+  const isPostOwner =
+    author.data.id === getServerAuthentication().user?.authorId;
 
-  if (!author.datas) {
-    notFound();
-  }
-
-  if (authorPosts.datas.length === 0) {
+  if (authorPostsRequest.data.page.totalElements === 0) {
     return (
       <Wrapper>
         <PostOwner
-          avatarSrc={author.datas.avatar?.url}
-          name={author.datas.name}
-          description={textFormatter(author.datas.description)}
-          slug={author.datas.slug}
-          authorId={author.datas.authorId}
+          avatarSrc={author.data.image?.url}
+          name={author.data.name}
+          description={textFormatter(author.data.description)}
+          slug={author.data.slug}
+          authorId={author.data.id}
         />
         <NoPostFound>
           <Heading>Nenhum post encontrado</Heading>
@@ -70,25 +72,25 @@ export default async function Author({ params }: AuthorProps) {
     );
   }
 
-  const session = await getCurrentUser();
-  const authorLoggedInfos = (await getAuthorLoggedInfos(session?.email)).datas;
-
-  const isPostOwner = authorLoggedInfos?.authorId === author.datas.authorId;
-
-  usePostsStore.setState({ state: { posts: authorPosts.datas } });
-
   return (
     <Wrapper>
-      <InitializerPostsStore posts={authorPosts.datas} />
-      <InitializerEndpointStore endpoint={postsEndpoint} />
       <PostOwner
-        avatarSrc={author.datas.avatar?.url}
-        name={author.datas.name}
-        description={textFormatter(author.datas.description)}
-        slug={author.datas.slug}
-        authorId={author.datas.authorId}
+        avatarSrc={author.data.image?.url}
+        name={author.data.name}
+        description={textFormatter(author.data.description)}
+        slug={author.data.slug}
+        authorId={author.data.id}
       />
-      <PostGrid isPostOwner={isPostOwner} />
+      <PostGrid
+        posts={authorPosts}
+        isPostOwner={isPostOwner}
+        loadMorePosts={
+          <LoadMorePosts
+            service={handleLoadMoreAuthorPosts}
+            isPostOwner={isPostOwner}
+          />
+        }
+      />
     </Wrapper>
   );
 }

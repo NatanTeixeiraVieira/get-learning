@@ -1,13 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import {
-  tokenEmailConfirmationKey,
-  emailIdKey,
-  tokenKey,
-  userKey,
-} from 'constants/cookiesKeys';
+import { emailIdKey, tokenKey, userKey } from 'constants/cookiesKeys';
 import {
   emailConfirmationExpiresTimeInSeconds,
   loginExpiresTimeInMilliseconds,
@@ -17,15 +12,13 @@ import { registerConfirmEmail } from 'services/auth';
 
 export default function ConfirmRegister() {
   const router = useRouter();
+  const params = useSearchParams();
 
   (async () => {
-    const tokenEmailConfirmation = parseCookies()[tokenEmailConfirmationKey];
+    const token = params.get('token');
     const emailId = parseCookies()[emailIdKey];
 
-    const response = await registerConfirmEmail(
-      emailId,
-      tokenEmailConfirmation
-    );
+    const response = await registerConfirmEmail(token, emailId);
 
     if (response.success && emailId) {
       setCookie(null, tokenKey, response.data.token, {
@@ -37,10 +30,6 @@ export default function ConfirmRegister() {
         path: '/',
       });
       destroyCookie(null, emailIdKey, {
-        maxAge: emailConfirmationExpiresTimeInSeconds,
-        path: '/',
-      });
-      destroyCookie(null, tokenEmailConfirmationKey, {
         maxAge: emailConfirmationExpiresTimeInSeconds,
         path: '/',
       });

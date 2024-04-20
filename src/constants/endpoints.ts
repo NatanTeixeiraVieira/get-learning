@@ -4,3 +4,5 @@ export const registerConfirmEmailEndpoint = `${authBaseUrl}/register/confirm-ema
 export const loginEndpoint = `${authBaseUrl}/login`;
 
 export const postEndpoint = '/post/v1';
+
+export const authorEndpoint = '/author/v1';

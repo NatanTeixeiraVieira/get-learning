@@ -1,12 +1,38 @@
+import { tokenKey } from 'constants/cookiesKeys';
 import { postEndpoint } from 'constants/endpoints';
+import { methodPost } from 'constants/request';
 import { revalidateTimeInSeconds } from 'constants/times';
+import { parseCookies } from 'nookies';
 import { FindAllPosts } from 'types/findAllPosts';
 import { FindPostById } from 'types/findPostById';
-import { postEndpointId } from 'utils/endpoints';
+import { SavePost } from 'types/savePost';
+import { postEndpointId, postsByAuthorIdEndpoint } from 'utils/endpoints';
 import fetcher from 'utils/fetcher';
 
-export const findAllPosts = async () => {
-  const posts = await fetcher<FindAllPosts>(postEndpoint, null, {
+export const findAllPosts = async (
+  page?: number,
+  limit?: number,
+  direction?: 'asc' | 'desc'
+) => {
+  const params = new URLSearchParams();
+
+  if (page) {
+    params.append('page', page.toString());
+  }
+
+  if (limit) {
+    params.append('limit', limit.toString());
+  }
+
+  if (direction) {
+    params.append('direction', direction.toString());
+  }
+
+  const url = params.toString()
+    ? `${postEndpoint}?${params.toString()}`
+    : postEndpoint;
+
+  const posts = await fetcher<FindAllPosts>(url, null, {
     next: { revalidate: revalidateTimeInSeconds },
   });
 
@@ -18,6 +44,69 @@ export const findPostById = async (postId: string) => {
     next: { revalidate: revalidateTimeInSeconds },
   });
   return post;
+};
+
+export const findAllPostsByAuthorId = async (
+  authorId: string,
+  page?: number,
+  limit?: number,
+  direction?: 'asc' | 'desc'
+) => {
+  const params = new URLSearchParams();
+
+  if (page) {
+    params.append('page', page.toString());
+  }
+
+  if (limit) {
+    params.append('limit', limit.toString());
+  }
+
+  if (direction) {
+    params.append('direction', direction.toString());
+  }
+
+  const url = params.toString()
+    ? `${postsByAuthorIdEndpoint(authorId)}?${params.toString()}`
+    : postsByAuthorIdEndpoint(authorId);
+
+  const posts = await fetcher<FindAllPosts>(url, null, {
+    next: { revalidate: revalidateTimeInSeconds },
+  });
+
+  return posts;
+};
+
+export const savePost = async (
+  title: string,
+  subtitle: string,
+  content: string,
+  allowComments: boolean,
+  categories: string[],
+  tags: string[],
+  coverImage: FileList
+) => {
+  const postData = {
+    title,
+    subtitle,
+    content,
+    allowComments,
+    categories,
+    tags,
+  };
+
+  const formData = new FormData();
+  formData.append('coverImageFile', coverImage[0]);
+  formData.append('dto', JSON.stringify(postData));
+  const token = parseCookies()[tokenKey];
+
+  const response = await fetcher<SavePost>(postEndpoint, formData, {
+    method: methodPost,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
 };
 
 export const deletePost = async (postId: string) => {

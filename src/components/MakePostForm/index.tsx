@@ -1,24 +1,18 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Jodit } from 'jodit-react';
 import { ImagePlus, Plus, X } from 'lucide-react';
-import { addPost } from 'services/addPost';
-import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
-import { updatePost } from 'services/updatePost';
-import usePostStore from 'store/post';
-import { MakePostData } from 'types/addPostDatas';
+import { savePost } from 'services/post';
+import { MakePostFormData } from 'types/MakePostFormData';
 import categoriesList from 'utils/categoriesList';
-import translateText from 'utils/translateText';
-import { makePostFormSchema, textEditorSchema } from 'utils/validations';
+import { contentSchema, makePostFormSchema } from 'validations/schemas';
 import { ZodError } from 'zod';
 
 import {
@@ -41,43 +35,32 @@ import { Input } from 'components/Input';
 import TextEditor from 'components/TextEditor';
 
 export default function MakePostForm() {
-  const { post } = usePostStore().state;
-
   const router = useRouter();
-  const pathname = usePathname();
-
-  const isEdit = !!post && pathname === '/edit';
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, dirtyFields, isSubmitting },
-  } = useForm<MakePostData>({
+  } = useForm<MakePostFormData>({
     resolver: zodResolver(makePostFormSchema),
     defaultValues: {
-      title: isEdit ? post?.title : '',
-      excerpt: isEdit ? post?.excerpt : '',
-      category: isEdit ? post?.category.name : 'Selecione a categoria',
-      allowComents: isEdit ? post?.allowComents : true,
+      title: '',
+      subtitle: '',
+      category: 'Selecione a categoria',
+      allowComents: true,
     },
   });
 
-  const [editorError, setEditorError] = useState<string | null>(null);
-  const [tags, setTags] = useState<string[]>(
-    () => post?.tags.map((tag) => tag.name) ?? []
-  );
+  const [tags, setTags] = useState<string[]>([]);
 
-  const [previewImage, setPreviewImage] = useState<string | null>(() =>
-    isEdit ? post?.coverImage.url : null
-  );
+  const [previewImage, setPreviewImage] = useState('');
+  const [contentError, setContentError] = useState('');
 
   const inputTagsRef = useRef<HTMLInputElement>(null);
   const editorRef = useRef<Jodit>(null);
 
-  const session = useSession();
-
-  const watchCoverImage = watch('coverImage');
+  const watchCoverImage: FileList = watch('coverImage');
 
   useEffect(() => {
     const handleCoverImageSelected = () => {
@@ -94,61 +77,46 @@ export default function MakePostForm() {
     }
   }, [errors.coverImage, watchCoverImage, dirtyFields.coverImage]);
 
-  const handleAddTag = () => {
-    if (
-      inputTagsRef.current?.value &&
-      !tags.includes(inputTagsRef.current?.value)
-    ) {
-      const value = inputTagsRef.current.value.trim();
-      setTags((prev) => [...prev, value]);
+  const onSubmit = async ({
+    title,
+    subtitle,
+    allowComents,
+    category,
+    coverImage,
+  }: MakePostFormData) => {
+    const content = handleFinishValidations();
+    if (content) {
+      const response = await savePost(
+        title,
+        subtitle,
+        content,
+        allowComents,
+        [category],
+        tags,
+        coverImage
+      );
     }
   };
 
-  const handleRemoveTag = (e: MouseEvent<SVGSVGElement>) => {
-    const id = e.currentTarget.id;
-    setTags((prev) => prev.filter((item) => item !== id));
+  const handleAddTag = () => {
+    const tag = inputTagsRef.current?.value ?? '';
+    if (!tags.includes(tag)) {
+      setTags((prev) => (tag ? [...prev, tag] : prev));
+    }
   };
 
-  const onSubmit: SubmitHandler<MakePostData> = async (data: MakePostData) => {
+  const handleRemoveTag = (tagRemove: string) => {
+    setTags((prev) => prev.filter((tag) => tag !== tagRemove));
+  };
+
+  const handleFinishValidations = () => {
     try {
-      const authorLoggedInfos = await getAuthorLoggedInfos(
-        session.data?.user?.email
-      );
-
-      if (!authorLoggedInfos) {
-        toast.error(
-          'Falha ao enviar o post. Por favor, tente novamente mais tarde.'
-        );
-        return;
-      }
-      setEditorError(null);
-      const editorContent = textEditorSchema.parse(editorRef.current?.value);
-
-      const datasToSend = {
-        ...data,
-        tags,
-        content: editorContent,
-        authorId: authorLoggedInfos.datas.authorId,
-      };
-
-      const response = await (isEdit
-        ? updatePost(post.postId, post.coverImage.name, datasToSend)
-        : addPost(datasToSend));
-      const translatedResponse = (
-        await translateText(response.datas.message)
-      ).toLowerCase();
-
-      if (response.ok) {
-        toast.success(`Post ${translatedResponse}.`);
-        router.push('/');
-        return;
-      }
-
-      toast.error(translatedResponse);
+      const contentValidation = contentSchema.parse(editorRef.current?.value);
+      setContentError('');
+      return contentValidation;
     } catch (error) {
       if (error instanceof ZodError) {
-        const validationError = error.errors[0].message;
-        setEditorError(validationError);
+        setContentError(error.issues[0].message);
       }
     }
   };
@@ -163,13 +131,13 @@ export default function MakePostForm() {
         )}
       </Input.Root>
 
-      <TextEditor editorError={editorError} isEdit={isEdit} ref={editorRef} />
+      <TextEditor editorError={contentError} isEdit={false} ref={editorRef} />
 
       <Excerpt>
-        <Input.Label htmlFor="excerpt">Subtítulo</Input.Label>
-        <textarea id="excerpt" rows={2} {...register('excerpt')} />
-        {errors.excerpt && (
-          <Input.HelperText>{errors.excerpt.message}</Input.HelperText>
+        <Input.Label htmlFor="subtitle">Subtítulo</Input.Label>
+        <textarea id="subtitle" rows={2} {...register('subtitle')} />
+        {errors.subtitle && (
+          <Input.HelperText>{errors.subtitle.message}</Input.HelperText>
         )}
       </Excerpt>
 
@@ -177,9 +145,7 @@ export default function MakePostForm() {
         <ClassificationFields>
           <label htmlFor="category">Categoria</label>
           <Select id="category" {...register('category')}>
-            <option value="Selecione a categoria">
-              {isEdit ? post.category.name : 'Selecione a categoria'}
-            </option>
+            <option value="Selecione a categoria">Selecione a categoria</option>
             {categoriesList.map((category) => (
               <option value={category} key={`makePostForm-${category}`}>
                 {category}
@@ -206,7 +172,7 @@ export default function MakePostForm() {
           {tags.map((tag) => (
             <span key={`MakePostForm-${tag}`}>
               <TagText>{tag}</TagText>
-              <X size="1.3rem" onClick={handleRemoveTag} id={tag} />
+              <X size="1.3rem" onClick={() => handleRemoveTag(tag)} id={tag} />
             </span>
           ))}
         </Display>
@@ -245,9 +211,14 @@ export default function MakePostForm() {
 
       <Buttons>
         <Link href={!isSubmitting ? '/' : ''}>Cancelar</Link>
-        <Button.Root type="submit" width="10rem" disabled={isSubmitting}>
+        <Button.Root
+          type="submit"
+          width="10rem"
+          disabled={isSubmitting}
+          onClick={handleFinishValidations}
+        >
           {isSubmitting && <Button.IconSpin />}
-          {!isSubmitting && (isEdit ? 'Salvar' : 'Publicar')}
+          {!isSubmitting && 'Publicar'}
         </Button.Root>
       </Buttons>
     </MakePostFormContainer>

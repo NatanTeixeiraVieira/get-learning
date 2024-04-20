@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 
+import { tokenKey, userKey } from 'constants/cookiesKeys';
+import { loginExpiresTimeInMilliseconds } from 'constants/times';
 import { useRouteChange } from 'hooks/useRouteChange';
 import { Laptop, Moon, Sun, UserCircle2, X } from 'lucide-react';
-import { getAuthentication } from 'utils/getAuthentication';
+import { destroyCookie } from 'nookies';
+import { getClientAuthentication } from 'utils/getAuthentication';
 
 import {
   AccountIcon,
@@ -23,13 +26,22 @@ import AvatarProfile from 'components/AvatarProfile';
 
 export default function UserAccount() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
-  const { user } = getAuthentication();
+  const { user } = getClientAuthentication();
 
   const handleCloseMenu = useCallback(() => {
     setShowAccountMenu(false);
   }, []);
 
-  // const handleLogout = useCallback(async () => {}, []);
+  const handleLogout = useCallback(async () => {
+    destroyCookie(null, tokenKey, {
+      maxAge: loginExpiresTimeInMilliseconds,
+      path: '/',
+    });
+    destroyCookie(null, userKey, {
+      maxAge: loginExpiresTimeInMilliseconds,
+      path: '/',
+    });
+  }, []);
 
   useRouteChange(handleCloseMenu);
 
@@ -64,7 +76,7 @@ export default function UserAccount() {
           <nav>
             <ul>
               <NavigationItems>
-                <Link href={`${user?.userSlug}/${user?.id}`}>
+                <Link href={`${user?.userSlug}/${user?.authorId}`}>
                   <AvatarProfile
                     src={user?.avatar?.url}
                     alt="Avatar do proprietário do usuário logado"
@@ -91,7 +103,9 @@ export default function UserAccount() {
                   <Sun />
                 </ThemeIcon>
               </ToggleThemeArea>
-              {/* <Exit onClick={handleLogout}>Sair</Exit> */}
+              <Link href="/login">
+                <Exit onClick={handleLogout}>Sair</Exit>
+              </Link>
             </ul>
           </nav>
         </AccountMenu>

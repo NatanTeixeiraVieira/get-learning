@@ -7,12 +7,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  tokenKey,
-  userKey,
-  emailIdKey,
-  tokenEmailConfirmationKey,
-} from 'constants/cookiesKeys';
+import { tokenKey, userKey, emailIdKey } from 'constants/cookiesKeys';
 import {
   loginExpiresTimeInMilliseconds,
   emailConfirmationExpiresTimeInSeconds,
@@ -67,10 +62,6 @@ export default function LoginForm() {
       path: '/',
     });
     destroyCookie(null, emailIdKey, {
-      maxAge: emailConfirmationExpiresTimeInSeconds,
-      path: '/',
-    });
-    destroyCookie(null, tokenEmailConfirmationKey, {
       maxAge: emailConfirmationExpiresTimeInSeconds,
       path: '/',
     });

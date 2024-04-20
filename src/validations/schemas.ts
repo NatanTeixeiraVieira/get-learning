@@ -46,12 +46,25 @@ export const loginFormSchema = z.object({
   password,
 });
 
+export const contentSchema = z.string().refine((content) => {
+  console.log(
+    DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [''],
+    }).split(/\s+/).length
+  );
+  return (
+    DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [''],
+    }).split(/\s+/).length >= 3
+  );
+}, 'Pouco conteúdo. Por favor, escreva mais.');
+
 export const makePostFormSchema = z.object({
   title: z
     .string({ required_error: 'Este campo é obrigatório.' })
     .min(1, 'Este campo é obrigatório.')
     .min(3, 'O título deve conter pelo menos 3 caracteres.'),
-  excerpt: z
+  subtitle: z
     .string({ required_error: 'Este campo é obrigatório.' })
     .min(1, 'Este campo é obrigatório.')
     .min(3, 'O subtítulo deve conter pelo menos 3 caracteres.'),
@@ -59,35 +72,13 @@ export const makePostFormSchema = z.object({
     .string({ required_error: 'Este campo é obrigatório.' })
     .refine(
       (category) => categoriesList.includes(category),
-      'Selecione uma categoria.'
+      'Por favor, selecione uma categoria.'
     ),
   allowComents: z.boolean(),
   coverImage: image,
 });
 
-export const textEditorSchema = z.string().refine(
-  (content) =>
-    DOMPurify.sanitize(content, {
-      ALLOWED_TAGS: [''],
-    }).split(/\s+/).length >= 3,
-  'Pouco conteúdo. Por favor, escreva mais.'
-);
-
 export const accountInfosSchema = z.object({
   name: userName,
   description: z.string().trim().optional(),
-});
-
-export const validatePostToSendSchema = z.object({
-  title: makePostFormSchema.shape.title,
-  excerpt: makePostFormSchema.shape.excerpt,
-  category: makePostFormSchema.shape.category,
-  allowComents: makePostFormSchema.shape.allowComents,
-  content: z.string(),
-  tags: z.array(z.any()),
-  authorId: z.string(),
-  coverImage: z.object({
-    name: z.string(),
-    url: z.string(),
-  }),
 });

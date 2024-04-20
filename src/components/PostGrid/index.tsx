@@ -1,15 +1,22 @@
+import { ReactNode } from 'react';
+
 import { Post } from 'types/findAllPosts';
 
 import { Wrapper } from './styles';
 
-import LoadMorePosts from 'components/LoadMorePosts';
 import PostCard from 'components/PostCard';
 
 type PostGridProps = {
   posts: Post[];
+  isPostOwner?: boolean;
+  loadMorePosts?: ReactNode;
 };
 
-export default function PostGrid({ posts }: PostGridProps) {
+export default function PostGrid({
+  posts,
+  isPostOwner = false,
+  loadMorePosts,
+}: PostGridProps) {
   return (
     <Wrapper>
       {posts.map((post) => (
@@ -19,10 +26,10 @@ export default function PostGrid({ posts }: PostGridProps) {
           subtitle={post.subtitle}
           coverImage={post.coverImage}
           id={post.id}
-          isPostOwner={false}
+          isPostOwner={isPostOwner}
         />
       ))}
-      {/* <LoadMorePosts isPostOwner={false} /> */}
+      {loadMorePosts}
     </Wrapper>
   );
 }

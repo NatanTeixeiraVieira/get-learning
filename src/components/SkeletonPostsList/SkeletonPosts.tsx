@@ -1,9 +1,11 @@
+import { postsPerRequest } from 'constants/request';
+
 import { Image, PostText, Post } from './styles';
 
 export default function SkeletonPosts() {
   return (
     <>
-      {[...Array(24)].map((_, index) => (
+      {[...Array(postsPerRequest)].map((_, index) => (
         <Post key={index}>
           <Image />
           <PostText height={1.5} />

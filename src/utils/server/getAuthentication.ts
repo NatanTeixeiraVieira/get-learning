@@ -1,10 +1,11 @@
+import { cookies } from 'next/headers';
+
 import { tokenKey, userKey } from 'constants/cookiesKeys';
-import { parseCookies } from 'nookies';
 import { UserLogin } from 'types/login';
 
-export const getClientAuthentication = () => {
-  const token: string | undefined = parseCookies()[tokenKey];
-  const userJson = parseCookies()[userKey];
+export const getServerAuthentication = () => {
+  const token: string | undefined = cookies().get(tokenKey)?.value;
+  const userJson = cookies().get(userKey)?.value;
   const user = userJson ? (JSON.parse(userJson) as UserLogin) : null;
 
   return {

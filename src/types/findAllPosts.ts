@@ -35,7 +35,7 @@ type Links = Record<LinksKey, LinksValue>;
 
 type PageKeys = 'size' | 'totalElements' | 'totalPages' | 'number';
 
-type Page = Record<PageKeys, number>;
+export type Page = Record<PageKeys, number>;
 
 export type FindAllPosts = {
   _embedded: PostsList;

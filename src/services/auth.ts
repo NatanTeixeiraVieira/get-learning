@@ -3,7 +3,7 @@ import {
   registerConfirmEmailEndpoint,
   registerSendEmailEndpoint,
 } from 'constants/endpoints';
-import { methodPost } from 'constants/request';
+import { contentTypeJson, methodPost } from 'constants/request';
 import { Login } from 'types/login';
 import { RegisterSendEmailVerification } from 'types/registerSendEmail';
 import fetcher from 'utils/fetcher';
@@ -21,14 +21,14 @@ export const registerSendEmailVerification = async (
   const response = await fetcher<RegisterSendEmailVerification>(
     registerSendEmailEndpoint,
     body,
-    { method: methodPost }
+    { method: methodPost, headers: { 'Content-Type': contentTypeJson } }
   );
   return response;
 };
 
 export const registerConfirmEmail = async (
-  emailId?: string,
-  tokenEmailConfirmation?: string
+  tokenEmailConfirmation: string | null,
+  emailId?: string
 ) => {
   if (emailId && tokenEmailConfirmation) {
     const response = await fetcher<Login>(
@@ -36,8 +36,10 @@ export const registerConfirmEmail = async (
       { emailId },
       {
         method: methodPost,
+
         headers: {
           Authorization: tokenEmailConfirmation,
+          'Content-Type': contentTypeJson,
         },
       }
     );

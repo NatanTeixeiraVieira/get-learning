@@ -1,59 +1,58 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { postsPerRequest } from 'constants/api';
-import useEndpointStore from 'store/endpointGetPosts';
-import usePostsStore from 'store/posts';
-import { Post } from 'types/post';
-import fetcher from 'utils/fetcher';
+import { Fetcher } from 'types/fetcher';
+import { FindAllPosts, Post } from 'types/findAllPosts';
 
 import PostCard from 'components/PostCard';
 import SkeletonPostList from 'components/SkeletonPostsList';
 
 type LoadMorePostsProps = {
   isPostOwner: boolean;
+  service: (page: number) => Promise<Fetcher<FindAllPosts>>;
 };
 
-export default function LoadMorePosts({ isPostOwner }: LoadMorePostsProps) {
+export default function LoadMorePosts({
+  isPostOwner,
+  service,
+}: LoadMorePostsProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [newPosts, setNewPosts] = useState<Post[]>([]);
-  const {
-    state: { posts },
-  } = usePostsStore();
-  const {
-    state: { endpoint },
-  } = useEndpointStore();
-  const startAfter = useRef(
-    posts.length === postsPerRequest ? posts.at(-1)?.createdAt : null
-  );
-
-  const handleLoadMorePosts = useCallback(async () => {
-    const scrollPositionAllowRequest = window.scrollY * 2 + window.innerHeight;
-    const documentHeight = document.documentElement.offsetHeight;
-    if (scrollPositionAllowRequest >= documentHeight && startAfter.current) {
-      const endpointLoadMorePosts = `${endpoint}${
-        endpoint.includes('?') ? '&' : '?'
-      }startAfter=${startAfter.current}`;
-
-      const morePosts = await fetcher<Post[]>(endpointLoadMorePosts);
-      setNewPosts(morePosts.datas);
-      if (morePosts.datas.length < postsPerRequest) {
-        startAfter.current = null;
-        return;
-      }
-      startAfter.current = morePosts?.datas?.at(-1)?.createdAt;
-    }
-  }, [endpoint]);
+  const currentPage = useRef(1);
+  const lastElementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleLoadMorePosts);
+    const intersectionObserver = new IntersectionObserver(async (entries) => {
+      const isSomeIntersecting = entries.some((entry) => entry.isIntersecting);
+      if (isSomeIntersecting) {
+        const posts = await service(currentPage.current);
+
+        if (posts.data._embedded) {
+          setNewPosts((prev) => [...prev, ...posts.data._embedded.postsList]);
+          currentPage.current = posts.data.page.number + 1;
+          return;
+        }
+        setIsLoading(false);
+      }
+    });
+
+    if (lastElementRef.current) {
+      intersectionObserver.observe(lastElementRef.current);
+    }
 
     return () => {
-      window.removeEventListener('scroll', handleLoadMorePosts);
+      if (intersectionObserver) {
+        intersectionObserver.disconnect();
+      }
     };
-  }, [handleLoadMorePosts]);
+  }, [service]);
 
-  if (newPosts.length === 0 && startAfter.current) {
+  useEffect(() => {
+    setIsLoading(false);
+  }, [newPosts]);
+
+  if (isLoading) {
     return <SkeletonPostList.Posts />;
   }
 
@@ -61,14 +60,15 @@ export default function LoadMorePosts({ isPostOwner }: LoadMorePostsProps) {
     <>
       {newPosts.map((post) => (
         <PostCard
-          key={post.postId}
+          key={post.id}
           title={post.title}
-          subtitle={post.excerpt}
+          subtitle={post.subtitle}
           coverImage={post.coverImage}
-          id={post.postId}
+          id={post.id}
           isPostOwner={isPostOwner}
         />
       ))}
+      <div ref={lastElementRef} />
     </>
   );
 }

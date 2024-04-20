@@ -5,12 +5,12 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { emailIdKey, tokenEmailConfirmationKey } from 'constants/cookiesKeys';
+import { emailIdKey } from 'constants/cookiesKeys';
 import { emailConfirmationExpiresTimeInSeconds } from 'constants/times';
 import { Eye, EyeOff } from 'lucide-react';
 import { setCookie } from 'nookies';
 import { registerSendEmailVerification } from 'services/auth';
-import { RegisterData } from 'types/registerData';
+import { RegisterData } from 'types/registerFormData';
 import { registerFormSchema } from 'validations/schemas';
 
 import { RegisterFormContainer } from './styles';
@@ -37,14 +37,10 @@ export default function RegisterForm() {
   const onSubmit = async ({ userName, email, password }: RegisterData) => {
     const {
       success,
-      data: { emailId, token },
+      data: { emailId },
     } = await registerSendEmailVerification(email, password, userName);
     if (success) {
       setCookie(null, emailIdKey, emailId, {
-        maxAge: emailConfirmationExpiresTimeInSeconds,
-        path: '/',
-      });
-      setCookie(null, tokenEmailConfirmationKey, token, {
         maxAge: emailConfirmationExpiresTimeInSeconds,
         path: '/',
       });

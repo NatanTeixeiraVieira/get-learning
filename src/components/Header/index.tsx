@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
 import { useRouteChange } from 'hooks/useRouteChange';
-import { getAuthentication } from 'utils/getAuthentication';
+import { getClientAuthentication } from 'utils/getAuthentication';
 
 import {
   HeaderContainer,
@@ -30,7 +30,7 @@ export default function Header() {
 
   useRouteChange(handleCloseMenu);
 
-  const { user } = getAuthentication();
+  const { user } = getClientAuthentication();
 
   return (
     <HeaderContainer>
