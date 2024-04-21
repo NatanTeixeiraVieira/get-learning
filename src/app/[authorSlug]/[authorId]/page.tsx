@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { userKey } from 'constants/cookiesKeys';
 import { findAuthorById } from 'services/author';
 import { findAllPostsByAuthorId } from 'services/post';
-import { getClientAuthentication } from 'utils/getAuthentication';
-import { getServerAuthentication } from 'utils/server/getAuthentication';
+import { getServerAuthentication } from 'utils/getServerAuthentication';
 import { textFormatter } from 'utils/textFormatter';
 
 import { Button } from 'components/Button';

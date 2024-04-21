@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { Category } from 'types/FindPostById';
+import { Category, Category } from 'types/findPostById';
 import { dateFormatter } from 'utils/dateFormatter';
 
 import { CategoryElement, Container } from './styles';

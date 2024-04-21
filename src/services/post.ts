@@ -6,31 +6,20 @@ import { parseCookies } from 'nookies';
 import { FindAllPosts } from 'types/findAllPosts';
 import { FindPostById } from 'types/findPostById';
 import { SavePost } from 'types/savePost';
-import { postEndpointId, postsByAuthorIdEndpoint } from 'utils/endpoints';
+import {
+  categoryPostsEndpoint,
+  postEndpointId,
+  postsByAuthorIdEndpoint,
+} from 'utils/endpoints';
 import fetcher from 'utils/fetcher';
+import generatePaginatedUrl from 'utils/generatePaginatedUrl';
 
 export const findAllPosts = async (
   page?: number,
   limit?: number,
   direction?: 'asc' | 'desc'
 ) => {
-  const params = new URLSearchParams();
-
-  if (page) {
-    params.append('page', page.toString());
-  }
-
-  if (limit) {
-    params.append('limit', limit.toString());
-  }
-
-  if (direction) {
-    params.append('direction', direction.toString());
-  }
-
-  const url = params.toString()
-    ? `${postEndpoint}?${params.toString()}`
-    : postEndpoint;
+  const url = generatePaginatedUrl(postEndpoint, page, limit, direction);
 
   const posts = await fetcher<FindAllPosts>(url, null, {
     next: { revalidate: revalidateTimeInSeconds },
@@ -52,23 +41,32 @@ export const findAllPostsByAuthorId = async (
   limit?: number,
   direction?: 'asc' | 'desc'
 ) => {
-  const params = new URLSearchParams();
+  const url = generatePaginatedUrl(
+    postsByAuthorIdEndpoint(authorId),
+    page,
+    limit,
+    direction
+  );
 
-  if (page) {
-    params.append('page', page.toString());
-  }
+  const posts = await fetcher<FindAllPosts>(url, null, {
+    next: { revalidate: revalidateTimeInSeconds },
+  });
 
-  if (limit) {
-    params.append('limit', limit.toString());
-  }
+  return posts;
+};
 
-  if (direction) {
-    params.append('direction', direction.toString());
-  }
-
-  const url = params.toString()
-    ? `${postsByAuthorIdEndpoint(authorId)}?${params.toString()}`
-    : postsByAuthorIdEndpoint(authorId);
+export const findAllPostsByCategorySlug = async (
+  categorySlug: string,
+  page?: number,
+  limit?: number,
+  direction?: 'asc' | 'desc'
+) => {
+  const url = generatePaginatedUrl(
+    categoryPostsEndpoint(categorySlug),
+    page,
+    limit,
+    direction
+  );
 
   const posts = await fetcher<FindAllPosts>(url, null, {
     next: { revalidate: revalidateTimeInSeconds },

@@ -8,7 +8,7 @@ import { loginExpiresTimeInMilliseconds } from 'constants/times';
 import { useRouteChange } from 'hooks/useRouteChange';
 import { Laptop, Moon, Sun, UserCircle2, X } from 'lucide-react';
 import { destroyCookie } from 'nookies';
-import { getClientAuthentication } from 'utils/getAuthentication';
+import { getClientAuthentication } from 'utils/getClientAuthentication';
 
 import {
   AccountIcon,
@@ -32,7 +32,7 @@ export default function UserAccount() {
     setShowAccountMenu(false);
   }, []);
 
-  const handleLogout = useCallback(async () => {
+  const handleLogout = useCallback(() => {
     destroyCookie(null, tokenKey, {
       maxAge: loginExpiresTimeInMilliseconds,
       path: '/',

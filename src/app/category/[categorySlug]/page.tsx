@@ -1,16 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
-import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
-import usePostsStore from 'store/posts';
-import InitializerPostsStore from 'store/posts/initializerStore';
-import { Post } from 'types/post';
-import fetcher from 'utils/fetcher';
+import { findAllPostsByCategorySlug } from 'services/post';
 
 import { Container } from './styles';
 
 import Heading from 'components/Heading';
+import LoadMorePosts from 'components/LoadMorePosts';
 import PostGrid from 'components/PostGrid';
 
 type CategoryProps = {
@@ -27,13 +23,10 @@ export const generateMetadata = async ({
   searchParams,
 }: CategoryProps): Promise<Metadata> => {
   try {
-    const categoryPosts = await fetcher<Post[]>(
-      `/posts/classification/category?name=${searchParams.name}&slug=${params.categorySlug}`,
-      {
-        next: { revalidate: 10 },
-      }
-    );
-    if (!categoryPosts.datas[0]) {
+    const response = await findAllPostsByCategorySlug(params.categorySlug);
+    const categoryPosts = response.data._embedded.postsList;
+
+    if (!categoryPosts) {
       return {
         title: 'Página não encontrada',
       };
@@ -53,23 +46,22 @@ export default async function Category({
   params,
   searchParams,
 }: CategoryProps) {
-  if (!searchParams.name) {
-    notFound();
-  }
-  const postsEndpoint = `/posts/classification/category?name=${searchParams.name}&slug=${params.categorySlug}`;
-  const categoryPosts = await fetcher<Post[]>(postsEndpoint, {
-    next: { revalidate: 10 },
-  });
-  if (!categoryPosts.datas[0]) {
-    notFound();
-  }
+  const handleLoadMorePosts = async (page: number) => {
+    'use server';
 
-  usePostsStore.setState({ state: { posts: categoryPosts.datas } });
+    return findAllPostsByCategorySlug(params.categorySlug, page);
+  };
+
+  const response = await findAllPostsByCategorySlug(params.categorySlug);
+  console.log('🚀 ~ response:', response);
+  const categoryPosts = response.data?._embedded?.postsList;
+
+  if (!categoryPosts) {
+    return <div>Sem posts</div>;
+  }
 
   return (
     <Container>
-      <InitializerPostsStore posts={categoryPosts.datas} />
-      <InitializerEndpointStore endpoint={postsEndpoint} />
       <Heading>
         <Link
           href={{
@@ -82,7 +74,10 @@ export default async function Category({
           {searchParams.name}
         </Link>
       </Heading>
-      <PostGrid />
+      <PostGrid
+        posts={categoryPosts}
+        loadMorePosts={<LoadMorePosts service={handleLoadMorePosts} />}
+      />
     </Container>
   );
 }

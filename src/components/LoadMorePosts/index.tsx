@@ -9,12 +9,12 @@ import PostCard from 'components/PostCard';
 import SkeletonPostList from 'components/SkeletonPostsList';
 
 type LoadMorePostsProps = {
-  isPostOwner: boolean;
+  isPostOwner?: boolean;
   service: (page: number) => Promise<Fetcher<FindAllPosts>>;
 };
 
 export default function LoadMorePosts({
-  isPostOwner,
+  isPostOwner = false,
   service,
 }: LoadMorePostsProps) {
   const [isLoading, setIsLoading] = useState(false);

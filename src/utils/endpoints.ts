@@ -7,3 +7,6 @@ export const authorEndpointId = (authorId: string) =>
 
 export const postsByAuthorIdEndpoint = (authorId: string) =>
   `${postEndpoint}/authorId/${authorId}`;
+
+export const categoryPostsEndpoint = (categorySlug: string) =>
+  `${postEndpoint}/category/${categorySlug}`;
