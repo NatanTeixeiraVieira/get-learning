@@ -53,7 +53,6 @@ export default async function Category({
   };
 
   const response = await findAllPostsByCategorySlug(params.categorySlug);
-  console.log('🚀 ~ response:', response);
   const categoryPosts = response.data?._embedded?.postsList;
 
   if (!categoryPosts) {

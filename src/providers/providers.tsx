@@ -11,11 +11,11 @@ import GlobalStyles from 'styles/global';
 import baseTheme from 'styles/themes/base';
 
 import 'react-toastify/dist/ReactToastify.min.css';
+import dark from 'styles/themes/dark';
 import light from 'styles/themes/light';
 
 export function Providers({ children }: { children: ReactNode }) {
-  // const theme = useToggleTheme();
-  const theme = light;
+  const theme = dark;
   return (
     <StyledComponentsRegistry>
       <ThemeProvider theme={{ ...baseTheme, ...theme }}>

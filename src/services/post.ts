@@ -10,6 +10,7 @@ import {
   categoryPostsEndpoint,
   postEndpointId,
   postsByAuthorIdEndpoint,
+  tagPostsEndpoint,
 } from 'utils/endpoints';
 import fetcher from 'utils/fetcher';
 import generatePaginatedUrl from 'utils/generatePaginatedUrl';
@@ -63,6 +64,26 @@ export const findAllPostsByCategorySlug = async (
 ) => {
   const url = generatePaginatedUrl(
     categoryPostsEndpoint(categorySlug),
+    page,
+    limit,
+    direction
+  );
+
+  const posts = await fetcher<FindAllPosts>(url, null, {
+    next: { revalidate: revalidateTimeInSeconds },
+  });
+
+  return posts;
+};
+
+export const findAllPostsByTagSlug = async (
+  tagSlug: string,
+  page?: number,
+  limit?: number,
+  direction?: 'asc' | 'desc'
+) => {
+  const url = generatePaginatedUrl(
+    tagPostsEndpoint(tagSlug),
     page,
     limit,
     direction

@@ -2,28 +2,30 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import InitializerEndpointStore from 'store/endpointGetPosts/initializerStore';
-import usePostsStore from 'store/posts';
-import InitializerPostsStore from 'store/posts/initializerStore';
-import { Post } from 'types/post';
-import fetcher from 'utils/fetcher';
+import { findAllPostsByTagSlug } from 'services/post';
 
 import { Container } from './styles';
 
 import Heading from 'components/Heading';
+import LoadMorePosts from 'components/LoadMorePosts';
 import PostGrid from 'components/PostGrid';
+
+type TagProps = {
+  params: {
+    tagSlug: string;
+  };
+  searchParams: {
+    name: string;
+  };
+};
+
 export const generateMetadata = async ({
   params,
   searchParams,
 }: TagProps): Promise<Metadata> => {
   try {
-    const tagPosts = await fetcher<Post[]>(
-      `/posts/classification/tags?name=${searchParams.name}&slug=${params.tagSlug}`,
-      {
-        next: { revalidate: 10 },
-      }
-    );
-    if (!tagPosts.datas[0]) {
+    const tagPosts = await findAllPostsByTagSlug(params.tagSlug);
+    if (!tagPosts.data) {
       return {
         title: 'Página não encontrada',
       };
@@ -39,34 +41,26 @@ export const generateMetadata = async ({
   }
 };
 
-type TagProps = {
-  params: {
-    tagSlug: string;
-  };
-  searchParams: {
-    name: string;
-  };
-};
-
 export default async function Tag({ params, searchParams }: TagProps) {
   if (!searchParams.name) {
     notFound();
   }
-  const postsEndpoint = `/posts/classification/tags?name=${searchParams.name}&slug=${params.tagSlug}`;
-  const tagPosts = await fetcher<Post[]>(postsEndpoint, {
-    next: { revalidate: 10 },
-  });
 
-  if (!tagPosts.datas[0]) {
+  const handleLoadMorePosts = async (page: number) => {
+    'use server';
+
+    return findAllPostsByTagSlug(params.tagSlug, page);
+  };
+
+  const response = await findAllPostsByTagSlug(params.tagSlug);
+  const tagPosts = response.data._embedded.postsList;
+
+  if (!tagPosts) {
     notFound();
   }
 
-  usePostsStore.setState({ state: { posts: tagPosts.datas } });
-
   return (
     <Container>
-      <InitializerPostsStore posts={tagPosts.datas} />
-      <InitializerEndpointStore endpoint={postsEndpoint} />
       <Heading>
         <Link
           href={{
@@ -79,7 +73,10 @@ export default async function Tag({ params, searchParams }: TagProps) {
           #{searchParams.name}
         </Link>
       </Heading>
-      <PostGrid />
+      <PostGrid
+        posts={tagPosts}
+        loadMorePosts={<LoadMorePosts service={handleLoadMorePosts} />}
+      />
     </Container>
   );
 }
