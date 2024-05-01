@@ -12,8 +12,8 @@ export default function Header() {
   return (
     <HeaderContainer>
       <AsideNavbar />
-      {user && <UserAccount />}
-      {!user && (
+      {user.token && <UserAccount />}
+      {!user.token && (
         <nav>
           <LoginAndRegister>
             <HeaderLink href="/login">Entrar</HeaderLink>

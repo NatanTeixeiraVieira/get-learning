@@ -4,7 +4,8 @@ import {
   registerSendEmailEndpoint,
 } from 'constants/endpoints';
 import { contentTypeJson, methodPost } from 'constants/request';
-import { Login } from 'types/login';
+import { revalidateTimeInSeconds } from 'constants/times';
+import { Login, UserLogin } from 'types/login';
 import { RegisterSendEmailVerification } from 'types/registerSendEmail';
 import fetcher from 'utils/fetcher';
 
@@ -47,6 +48,20 @@ export const registerConfirmEmail = async (
   }
 
   throw new Error('invalid data');
+};
+
+export const getLogin = async (token?: string) => {
+  const response = await fetcher<UserLogin>(loginEndpoint, null, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    next: {
+      revalidate: revalidateTimeInSeconds,
+      tags: ['get-loggin'],
+    },
+  });
+
+  return response;
 };
 
 export const login = async (login: string, password: string) => {

@@ -38,6 +38,10 @@ export const AccountMenu = styled.div<{ showAccountMenu: boolean }>`
       rgba(66, 74, 83, 0.15) 0px 8px 24px;
     z-index: 10;
 
+    a {
+      width: 100%;
+    }
+
     ${theme.media.mobile} {
       position: fixed;
       display: block;

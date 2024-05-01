@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 
 import { ThemeProvider } from 'styled-components';
@@ -11,11 +11,19 @@ import GlobalStyles from 'styles/global';
 import baseTheme from 'styles/themes/base';
 
 import 'react-toastify/dist/ReactToastify.min.css';
-import dark from 'styles/themes/dark';
-import light from 'styles/themes/light';
+import { useToggleTheme } from 'hooks/useToggleTheme';
 
-export function Providers({ children }: { children: ReactNode }) {
-  const theme = dark;
+type ProvidersProps = {
+  children: ReactNode;
+};
+
+export function Providers({ children }: ProvidersProps) {
+  const { theme, startTheme } = useToggleTheme();
+
+  useEffect(() => {
+    startTheme();
+  }, [startTheme]);
+
   return (
     <StyledComponentsRegistry>
       <ThemeProvider theme={{ ...baseTheme, ...theme }}>
@@ -31,12 +39,10 @@ export function Providers({ children }: { children: ReactNode }) {
           rtl={false}
           draggable={false}
           theme={theme.title}
-          toastStyle={
-            {
-              // backgroundColor:
-              // theme.title === 'dark' ? theme.colors.darkGray : '',
-            }
-          }
+          toastStyle={{
+            backgroundColor:
+              theme.title === 'dark' ? theme.colors.darkGray : '',
+          }}
         />
       </ThemeProvider>
     </StyledComponentsRegistry>

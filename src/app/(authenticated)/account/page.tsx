@@ -1,28 +1,32 @@
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
-import { getCurrentUser } from 'lib/session';
-import getAuthorLoggedInfos from 'services/getAuthorLoggedInfos';
+import { getLogin } from 'services/auth';
 
 import { Container, Content } from 'components/CreateAndUpdatePost/styles';
 
 import AccountInfos from 'components/AccountInfos';
 import Heading from 'components/Heading';
+import { getServerAuthentication } from 'utils/getServerAuthentication';
 
 export const metadata: Metadata = {
   title: 'Configurações da conta',
 };
 
 export default async function AccountConfig() {
-  const session = await getCurrentUser();
-  const authorLoggedInfos = await getAuthorLoggedInfos(session?.email);
-  if (!authorLoggedInfos.ok) {
-    throw new Error('Algo deu errado. Por favor tente novamente mais tarde.');
+  const { token } = getServerAuthentication();
+
+  const user = await getLogin(token);
+
+  if (!user.data) {
+    redirect('/login');
   }
+
   return (
     <Container>
       <Content>
         <Heading>Configurações da conta</Heading>
-        <AccountInfos authorLoggedInfos={authorLoggedInfos.datas} />
+        <AccountInfos user={user.data} />
       </Content>
     </Container>
   );

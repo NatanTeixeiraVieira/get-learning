@@ -3,13 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 
 import { Camera } from 'lucide-react';
-import { updateAvatar } from 'services/updateAuthor';
-import useAccountInfosStore from 'store/accountInfos';
-import { Author } from 'types/author';
-import translateText from 'utils/translateText';
+import { UserLogin } from 'types/login';
 
 import { Avatar, AvatarImage, Container, EditAvatar, Infos } from './styles';
 
@@ -20,18 +16,14 @@ import { DialogBox } from 'components/DialogBox';
 import EditAccountInfo from 'components/EditAccountInfo';
 
 type AccountInfosProps = {
-  authorLoggedInfos: Author;
+  user: UserLogin;
 };
 
 export type AvatarDatas = {
   avatarImage: FileList;
 };
 
-export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
-  const {
-    actions: { handleOpenDialogBox },
-  } = useAccountInfosStore();
-
+export default function AccountInfos({ user }: AccountInfosProps) {
   const {
     register,
     handleSubmit,
@@ -46,6 +38,9 @@ export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
 
   const [editAvatarImageIsOpen, setEditAvatarImageIsOpen] = useState(false);
   const [previewAvatarImage, setPreviewAvatarImage] = useState('');
+  const [dialogBoxFieldName, setDialogBoxFieldName] = useState<
+    'name' | 'description' | ''
+  >('');
 
   const router = useRouter();
 
@@ -77,31 +72,40 @@ export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
     setEditAvatarImageIsOpen(false);
   };
 
-  const onSubmit: SubmitHandler<AvatarDatas> = async (datas) => {
-    const responseUpdateAvatar = await updateAvatar(
-      authorLoggedInfos.authorId,
-      authorLoggedInfos.avatar?.name,
-      datas
-    );
+  const handleOpenTextDialogBox = (fieldName: 'name' | 'description') => {
+    setDialogBoxFieldName(fieldName);
+  };
 
-    const translatedResponse = (
-      await translateText(responseUpdateAvatar.datas.message)
-    ).toLowerCase();
+  const handleCloseTextDialogBox = () => {
+    setDialogBoxFieldName('');
+  };
 
-    if (responseUpdateAvatar.ok) {
-      setEditAvatarImageIsOpen(false);
-      router.refresh();
-      toast.success(translatedResponse + '.');
-      return;
-    }
-
-    toast.error(translatedResponse + '.');
+  const onSubmitImage: SubmitHandler<AvatarDatas> = (data) => {
+    // const responseUpdateAvatar = await updateAvatar(
+    //   authorLoggedInfos.authorId,
+    //   authorLoggedInfos.avatar?.name,
+    //   datas
+    // );
+    // if (responseUpdateAvatar.ok) {
+    //   setEditAvatarImageIsOpen(false);
+    //   router.refresh();
+    //   toast.success(translatedResponse + '.');
+    //   return;
+    // }
+    // toast.error(translatedResponse + '.');
   };
 
   return (
     <>
-      <EditAccountInfo authorLoggedInfos={authorLoggedInfos} />
-      <EditAvatar onSubmit={handleSubmit(onSubmit)}>
+      {dialogBoxFieldName && (
+        <EditAccountInfo
+          user={user}
+          fieldName={dialogBoxFieldName}
+          onCancelButtonClicked={handleCloseTextDialogBox}
+          onCloseDialogBox={handleCloseTextDialogBox}
+        />
+      )}
+      <EditAvatar onSubmit={handleSubmit(onSubmitImage)}>
         <DialogBox.Root open={editAvatarImageIsOpen} width="30rem">
           <DialogBox.Title text="Atualizar foto de perfil" />
           <AvatarImage>
@@ -134,7 +138,7 @@ export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
         <Avatar>
           <label htmlFor="avatarImagePicker">
             <AvatarProfile
-              src={authorLoggedInfos.avatar?.url}
+              src={user.authorImageUrl}
               alt="Avatar do proprietário do blog"
               width={130}
               height={130}
@@ -153,18 +157,18 @@ export default function AccountInfos({ authorLoggedInfos }: AccountInfosProps) {
           <tbody>
             <AccountConfigInfo
               descriptor="Nome de usuário"
-              info={authorLoggedInfos.name}
-              onClickEdit={() => handleOpenDialogBox('name')}
+              info={user.userName}
+              onClickEdit={() => handleOpenTextDialogBox('name')}
             />
             <AccountConfigInfo
               descriptor="Email"
-              info={authorLoggedInfos.userEmail}
+              info={user.login}
               pencil={false}
             />
             <AccountConfigInfo
               descriptor="Descrição"
-              info={authorLoggedInfos?.description}
-              onClickEdit={() => handleOpenDialogBox('description')}
+              info={user?.description}
+              onClickEdit={() => handleOpenTextDialogBox('description')}
             />
           </tbody>
         </Infos>

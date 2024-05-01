@@ -1,119 +1,98 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateInfo } from 'services/updateAuthor';
-import useAccountInfosStore from 'store/accountInfos';
-import { AccountInfosDatas } from 'types/accountInfosDatas';
-import { Author } from 'types/author';
-import { accountInfosSchema } from 'utils/validations';
+import { updateAuthorInfo } from 'services/author';
+import { AccountInfosData } from 'types/accountInfosData';
+import { UserLogin } from 'types/login';
+import { accountInfosSchema } from 'validations/schemas';
+
+import { DialogBoxButton } from './styles';
 
 import { Button } from 'components/Button';
 import { DialogBox } from 'components/DialogBox';
 import { Input } from 'components/Input';
 
 type EditAccountInfoProps = {
-  authorLoggedInfos: Author;
+  user: UserLogin;
+  fieldName: 'name' | 'description';
+  onCancelButtonClicked: () => void;
+  onCloseDialogBox: () => void;
 };
 
 export default function EditAccountInfo({
-  authorLoggedInfos,
+  user,
+  fieldName,
+  onCancelButtonClicked,
+  onCloseDialogBox,
 }: EditAccountInfoProps) {
+  const fields = {
+    name: 'Nome',
+    description: 'Descrição',
+  };
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
-  } = useForm<AccountInfosDatas>({
+  } = useForm<AccountInfosData>({
     resolver: zodResolver(accountInfosSchema),
     defaultValues: {
-      name: authorLoggedInfos.name,
-      description: authorLoggedInfos.description,
+      name: user.userName,
+      description: user.description,
     },
   });
 
-  const {
-    state: { editIsOpen, dialogBoxDescriptor },
-    actions: { closeDialogBox },
-  } = useAccountInfosStore();
+  const onSubmit: SubmitHandler<AccountInfosData> = async ({
+    name,
+    description,
+  }) => {
+    if (user.userName === name && user.description === description) return;
 
-  const router = useRouter();
-  const descriptorWithFallback = dialogBoxDescriptor ?? 'name';
-
-  const handleCloseDialogBox = () => {
-    reset();
-    closeDialogBox();
-  };
-
-  const onSubmit: SubmitHandler<AccountInfosDatas> = async (datas) => {
-    if (
-      datas.name !== authorLoggedInfos.name ||
-      datas.description !== authorLoggedInfos.description
-    ) {
-      const responseUpdateInfo = await updateInfo(
-        authorLoggedInfos.authorId,
-        datas
-      );
-      if (responseUpdateInfo.ok) {
-        closeDialogBox();
-        const message =
-          datas.name !== authorLoggedInfos.name
-            ? 'Nome de usuário atualizado com sucesso.'
-            : 'Descrição atualizada com sucesso.';
-        router.refresh();
-        toast.success(message);
-        return;
-      }
-
-      toast.error(
-        datas.name !== authorLoggedInfos.name
-          ? 'Falha ao atualizar o nome de usuário. Por favor, tente novamente mais tarde.'
-          : 'Falha ao atualizar a descrição. Por favor, tente novamente mais tarde.'
-      );
+    const responseUpdateInfo = await updateAuthorInfo(name, description);
+    if (responseUpdateInfo.success) {
+      const message =
+        fieldName === 'name'
+          ? 'Nome de usuário atualizado com sucesso.'
+          : 'Descrição atualizada com sucesso.';
+      toast.success(message);
+      onCloseDialogBox();
+      return;
     }
+    toast.error(
+      `Falha ao atualizar ${
+        fieldName === 'name' ? 'o nome' : 'a descrição'
+      }. Por favor, tente novamente mais tarde.`
+    );
   };
-
-  const text = dialogBoxDescriptor === 'name' ? 'Nome de usuário' : 'Descrição';
 
   return (
-    <DialogBox.Root open={editIsOpen}>
-      <DialogBox.Title text={`Editar ${text.toLocaleLowerCase()}`} />
+    <DialogBox.Root open={true}>
+      <DialogBox.Title text="" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input.Root>
-          <Input.Label htmlFor={descriptorWithFallback}>{text}</Input.Label>
-          <Input.Input
-            id={descriptorWithFallback}
-            defaultValue={
-              dialogBoxDescriptor ? authorLoggedInfos[dialogBoxDescriptor] : ''
-            }
-            type="text"
-            autoFocus
-            {...register(descriptorWithFallback)}
-          />
-          {dialogBoxDescriptor && errors[`${dialogBoxDescriptor}`] && (
-            <Input.HelperText>
-              {errors[`${dialogBoxDescriptor}`]?.message}
-            </Input.HelperText>
+          <Input.Label>{fields[fieldName]}</Input.Label>
+          <Input.Input type="text" autoFocus {...register(fieldName)} />
+          {fieldName && errors[fieldName] && (
+            <Input.HelperText>{errors[fieldName]?.message}</Input.HelperText>
           )}
         </Input.Root>
         <DialogBox.Actions>
-          <DialogBox.Button
+          <DialogBoxButton
             variant="destructive"
-            onClick={handleCloseDialogBox}
+            onClick={onCancelButtonClicked}
           >
             Cancelar
-          </DialogBox.Button>
-          <DialogBox.Button
+          </DialogBoxButton>
+          <DialogBoxButton
             type="submit"
             variant="secondary"
             disabled={isSubmitting}
           >
             {isSubmitting && <Button.IconSpin />}
             {!isSubmitting && 'Salvar'}
-          </DialogBox.Button>
+          </DialogBoxButton>
         </DialogBox.Actions>
       </form>
     </DialogBox.Root>

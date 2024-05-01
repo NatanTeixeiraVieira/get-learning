@@ -80,5 +80,8 @@ export const makePostFormSchema = z.object({
 
 export const accountInfosSchema = z.object({
   name: userName,
-  description: z.string().trim().optional(),
+  description: z
+    .string({ required_error: 'Este campo é obrigatório.' })
+    .trim()
+    .min(1, 'Este campo é obrigatório.'),
 });

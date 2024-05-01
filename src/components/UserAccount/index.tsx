@@ -6,9 +6,13 @@ import { useCallback, useState } from 'react';
 import { tokenKey, userKey } from 'constants/cookiesKeys';
 import { loginExpiresTimeInMilliseconds } from 'constants/times';
 import { useRouteChange } from 'hooks/useRouteChange';
+import { useToggleTheme } from 'hooks/useToggleTheme';
 import { Laptop, Moon, Sun, UserCircle2, X } from 'lucide-react';
 import { destroyCookie } from 'nookies';
+import { Theme } from 'types/theme';
 import { getClientAuthentication } from 'utils/getClientAuthentication';
+
+// TODO Change the get infos only from cookies
 
 import {
   AccountIcon,
@@ -21,12 +25,15 @@ import {
   Container,
   XIcon,
 } from './styles';
+import dark from 'styles/themes/dark';
+import light from 'styles/themes/light';
 
 import AvatarProfile from 'components/AvatarProfile';
 
 export default function UserAccount() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const { user } = getClientAuthentication();
+  const { toggleTheme } = useToggleTheme();
 
   const handleCloseMenu = useCallback(() => {
     setShowAccountMenu(false);
@@ -44,6 +51,10 @@ export default function UserAccount() {
   }, []);
 
   useRouteChange(handleCloseMenu);
+
+  const handleToggleTheme = (theme: Theme | null) => {
+    toggleTheme(theme);
+  };
 
   const isMobile = window.innerWidth < 760;
 
@@ -93,13 +104,13 @@ export default function UserAccount() {
                 <Link href="/account">Configurações da conta</Link>
               </NavigationItems>
               <ToggleThemeArea>
-                <ThemeIcon onClick={() => ''}>
+                <ThemeIcon onClick={() => handleToggleTheme(dark)}>
                   <Moon />
                 </ThemeIcon>
-                <ThemeIcon onClick={() => ''}>
+                <ThemeIcon onClick={() => handleToggleTheme(null)}>
                   <Laptop />
                 </ThemeIcon>
-                <ThemeIcon onClick={() => ''}>
+                <ThemeIcon onClick={() => handleToggleTheme(light)}>
                   <Sun />
                 </ThemeIcon>
               </ToggleThemeArea>

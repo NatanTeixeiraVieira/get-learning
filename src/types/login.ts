@@ -1,6 +1,13 @@
 type UserImageKeys = 'id' | 'name' | 'url';
 
-type UserLoginKeys = 'id' | 'authorId' | 'login' | 'userName' | 'userSlug';
+type UserLoginKeys =
+  | 'id'
+  | 'authorId'
+  | 'login'
+  | 'userName'
+  | 'userSlug'
+  | 'authorImageUrl'
+  | 'description';
 
 export type UserLogin = Record<UserLoginKeys, string> & {
   avatar: Record<UserImageKeys, string>;
