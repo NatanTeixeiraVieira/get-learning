@@ -9,8 +9,8 @@ import { useRouteChange } from 'hooks/useRouteChange';
 import { useToggleTheme } from 'hooks/useToggleTheme';
 import { Laptop, Moon, Sun, UserCircle2, X } from 'lucide-react';
 import { destroyCookie } from 'nookies';
+import { UserLogin } from 'types/login';
 import { Theme } from 'types/theme';
-import { getClientAuthentication } from 'utils/getClientAuthentication';
 
 // TODO Change the get infos only from cookies
 
@@ -30,9 +30,12 @@ import light from 'styles/themes/light';
 
 import AvatarProfile from 'components/AvatarProfile';
 
-export default function UserAccount() {
+type UserAccountProps = {
+  user: UserLogin;
+};
+
+export default function UserAccount({ user }: UserAccountProps) {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
-  const { user } = getClientAuthentication();
   const { toggleTheme } = useToggleTheme();
 
   const handleCloseMenu = useCallback(() => {

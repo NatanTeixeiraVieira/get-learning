@@ -1,3 +1,4 @@
+import { getLogin } from 'services/auth';
 import { getServerAuthentication } from 'utils/getServerAuthentication';
 
 import { HeaderContainer, LoginAndRegister } from './styles';
@@ -6,14 +7,15 @@ import AsideNavbar from 'components/AsideNavbar';
 import HeaderLink from 'components/HeaderLink';
 import UserAccount from 'components/UserAccount';
 
-export default function Header() {
-  const user = getServerAuthentication();
+export default async function Header() {
+  const { token } = getServerAuthentication();
+  const response = await getLogin(token);
 
   return (
     <HeaderContainer>
       <AsideNavbar />
-      {user.token && <UserAccount />}
-      {!user.token && (
+      {token && <UserAccount user={response.data} />}
+      {!token && (
         <nav>
           <LoginAndRegister>
             <HeaderLink href="/login">Entrar</HeaderLink>
