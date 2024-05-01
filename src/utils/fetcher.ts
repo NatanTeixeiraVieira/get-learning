@@ -10,7 +10,6 @@ const fetcher = async <T = unknown>(
     ...init,
     headers: {
       Accept: contentTypeJson,
-      'Content-Type': contentTypeJson,
       ...init?.headers,
     },
   };

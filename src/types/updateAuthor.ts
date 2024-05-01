@@ -1,6 +1,6 @@
 type Image = Record<'id' | 'name' | 'url', string>;
 
-export type UpdateAuthorInfo = {
+export type UpdateAuthor = {
   id: string;
   name: string;
   slug: string;

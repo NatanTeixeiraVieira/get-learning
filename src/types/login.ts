@@ -9,8 +9,11 @@ type UserLoginKeys =
   | 'authorImageUrl'
   | 'description';
 
-export type UserLogin = Record<UserLoginKeys, string> & {
-  avatar: Record<UserImageKeys, string>;
+export type UserLogin = Omit<
+  Record<UserLoginKeys, string>,
+  'authorImageUrl'
+> & {
+  authorImage: Record<UserImageKeys, string>;
 };
 
 export type Login = {

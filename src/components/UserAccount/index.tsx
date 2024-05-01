@@ -68,14 +68,14 @@ export default function UserAccount({ user }: UserAccountProps) {
           setShowAccountMenu((prev) => !prev);
         }}
       >
-        {user?.avatar && (
+        {user?.authorImage && (
           <AvatarProfile
-            src={user?.avatar?.url}
+            src={user?.authorImage?.url}
             alt="Avatar do proprietário do usuário logado"
             fill
           />
         )}
-        {!user?.avatar && (
+        {!user?.authorImage && (
           <UserCircle2 size="2.5rem" strokeWidth={2} color="white" />
         )}
       </AccountIcon>
@@ -92,7 +92,7 @@ export default function UserAccount({ user }: UserAccountProps) {
               <NavigationItems>
                 <Link href={`${user?.userSlug}/${user?.authorId}`}>
                   <AvatarProfile
-                    src={user?.avatar?.url}
+                    src={user?.authorImage?.url}
                     alt="Avatar do proprietário do usuário logado"
                     width={24}
                     height={24}

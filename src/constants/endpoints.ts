@@ -6,3 +6,5 @@ export const loginEndpoint = `${authBaseUrl}/login`;
 export const postEndpoint = '/post/v1';
 
 export const authorEndpoint = '/author/v1';
+export const updateAuthorInfoEndpoint = `${authorEndpoint}/update-info`;
+export const updateAuthorImageEndpoint = `${authorEndpoint}/update-image`;

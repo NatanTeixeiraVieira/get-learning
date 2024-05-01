@@ -1,10 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { Camera } from 'lucide-react';
+import { updateAuthorImage } from 'services/author';
 import { UserLogin } from 'types/login';
 
 import { Avatar, AvatarImage, Container, EditAvatar, Infos } from './styles';
@@ -19,7 +20,7 @@ type AccountInfosProps = {
   user: UserLogin;
 };
 
-export type AvatarDatas = {
+export type AvatarData = {
   avatarImage: FileList;
 };
 
@@ -30,7 +31,7 @@ export default function AccountInfos({ user }: AccountInfosProps) {
     watch,
     reset,
     formState: { errors, dirtyFields, isSubmitting },
-  } = useForm<AvatarDatas>({
+  } = useForm<AvatarData>({
     defaultValues: {
       avatarImage: undefined,
     },
@@ -41,8 +42,6 @@ export default function AccountInfos({ user }: AccountInfosProps) {
   const [dialogBoxFieldName, setDialogBoxFieldName] = useState<
     'name' | 'description' | ''
   >('');
-
-  const router = useRouter();
 
   const watchAvatarImage = watch('avatarImage');
 
@@ -80,19 +79,14 @@ export default function AccountInfos({ user }: AccountInfosProps) {
     setDialogBoxFieldName('');
   };
 
-  const onSubmitImage: SubmitHandler<AvatarDatas> = (data) => {
-    // const responseUpdateAvatar = await updateAvatar(
-    //   authorLoggedInfos.authorId,
-    //   authorLoggedInfos.avatar?.name,
-    //   datas
-    // );
-    // if (responseUpdateAvatar.ok) {
-    //   setEditAvatarImageIsOpen(false);
-    //   router.refresh();
-    //   toast.success(translatedResponse + '.');
-    //   return;
-    // }
-    // toast.error(translatedResponse + '.');
+  const onSubmitImage: SubmitHandler<AvatarData> = async (data) => {
+    const responseUpdateAvatar = await updateAuthorImage(data.avatarImage);
+    if (responseUpdateAvatar.success) {
+      setEditAvatarImageIsOpen(false);
+      toast.success('Avatar atualizado com sucesso.');
+      return;
+    }
+    toast.error('Houve um erro ao atualizar seu avatar');
   };
 
   return (
@@ -138,7 +132,7 @@ export default function AccountInfos({ user }: AccountInfosProps) {
         <Avatar>
           <label htmlFor="avatarImagePicker">
             <AvatarProfile
-              src={user.authorImageUrl}
+              src={user.authorImage.url}
               alt="Avatar do proprietário do blog"
               width={130}
               height={130}

@@ -2,12 +2,12 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import { getLogin } from 'services/auth';
+import { getServerAuthentication } from 'utils/getServerAuthentication';
 
 import { Container, Content } from 'components/CreateAndUpdatePost/styles';
 
 import AccountInfos from 'components/AccountInfos';
 import Heading from 'components/Heading';
-import { getServerAuthentication } from 'utils/getServerAuthentication';
 
 export const metadata: Metadata = {
   title: 'Configurações da conta',

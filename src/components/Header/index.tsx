@@ -10,6 +10,7 @@ import UserAccount from 'components/UserAccount';
 export default async function Header() {
   const { token } = getServerAuthentication();
   const response = await getLogin(token);
+  console.log('🚀 ~ Header ~ response:', response);
 
   return (
     <HeaderContainer>
